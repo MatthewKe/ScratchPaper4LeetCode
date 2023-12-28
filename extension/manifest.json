@@ -1,0 +1,43 @@
+{
+  "name": "ScratchPaper4LeetCode",
+  "version": "0.0.0.1",
+  "manifest_version": 3,
+  "description": "An extension to help visualize data structures when debugging.",
+  "icons": {
+  },
+  "action": {
+    "default_popup": "popup/popup.html"
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "<all_urls>"
+      ],
+      "js": [
+        "lib/jquery.min.js",
+        "lib/min/vs/loader.js",
+        "content-scripts/content.js"
+      ]
+    }
+  ],
+  "web_accessible_resources": [
+    {
+      "resources": [
+        "frontend/debugPage.html",
+        "lib/min/vs/**",
+        "inject-scripts/inject.js"
+      ],
+      "matches": [
+        "<all_urls>"
+      ]
+    }
+  ],
+  "permissions": [
+    "contextMenus",
+    "tabs",
+    "activeTab"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  }
+}

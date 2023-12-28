@@ -1,0 +1,3 @@
+.langInfo a {
+    @apply text-blue-s dark: text-blue-s
+}

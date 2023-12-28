@@ -1,0 +1,1 @@
+chrome-extension://bfdogplmndidlpjfhoijckpakkdjkkil/content/pdf.js

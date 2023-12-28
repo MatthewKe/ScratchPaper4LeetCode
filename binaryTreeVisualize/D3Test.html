@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Binary Tree with D3.js</title>
+    <script src="https://d3js.org/d3.v6.min.js"></script>
+    <style>
+        .link {
+            fill: none;
+            stroke: #ccc;
+            stroke-width: 2px;
+            stroke-dasharray: 5, 5; /* 设置为虚线 */
+        }
+
+        .node circle {
+            fill: #fff;
+            stroke: steelblue;
+            stroke-width: 3px;
+        }
+
+        .node text {
+            font: 12px sans-serif;
+            text-anchor: middle; /* 文本居中 */
+        }
+    </style>
+</head>
+<body>
+<svg width="600" height="400"></svg>
+<script>
+    var treeData = {
+        name: "Root", // 根节点名称
+        children: [   // 根节点的子节点数组
+            {
+                name: "Left Child", // 子节点名称
+                children: [        // 子节点的子节点数组
+                    {
+                        name: "Left Grandchild" // 孙节点名称
+                    },
+                    {
+                        name: "Right Grandchild" // 另一个孙节点
+                    }
+                ]
+            },
+            {
+                name: "Right Child" // 另一个子节点
+            }
+        ]
+    };
+
+    var svg = d3.select("svg"),
+        width = +svg.attr("width"),
+        height = +svg.attr("height"),
+        container = svg.append("g").attr("transform", "translate(0,40)"); // 向下移动树的起始位置
+
+    svg.call(d3.zoom().on("zoom", function (event) {
+        container.attr("transform", event.transform);
+    }));
+
+    var treemap = d3.tree().size([width, height * 0.8]); // 交换 width 和 height 以使树纵向生长
+
+    var nodes = d3.hierarchy(treeData),
+        treeNodes = treemap(nodes);
+
+    console.log(nodes);
+
+    var link = container.selectAll(".link")
+        .data(treeNodes.links())
+        .enter().append("path")
+        .attr("class", "link")
+        .attr("d", function (d) {
+            // 创建直线路径
+            return "M" + d.source.x + "," + d.source.y
+                + "L" + d.target.x + "," + d.target.y;
+        });
+
+    var node = container.selectAll(".node")
+        .data(treeNodes.descendants())
+        .enter().append("g")
+        .attr("class", "node")
+        .attr("transform", function (d) {
+            return "translate(" + d.x + "," + d.y + ")";
+        });
+
+    node.append("circle").attr("r", 30);
+
+    node.append("text")
+        .attr("dy", "0.35em") // 调整文本位置
+        .text(function (d) {
+            return d.data.name;
+        });
+
+
+</script>
+</body>
+</html>

@@ -1,0 +1,9 @@
+:global([contenteditable='true']:empty:before) {
+    content: attr(placeholder);
+    display: block;
+    color: rgb(60, 60, 67, 0.3);
+}
+
+:global(.dark [contenteditable='true']:empty:before) {
+    color: rgb(235, 235, 245, 0.3);
+}
