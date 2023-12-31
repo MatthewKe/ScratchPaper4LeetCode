@@ -4,21 +4,61 @@
     <meta charset="UTF-8">
     <title>Monaco Editor</title>
     <style>
-        /* 确保编辑器填满 iframe 的 90% */
         html, body {
-            width: 100%;
-            height: 100%;
             margin: 0;
             padding: 0;
+            height: 100%;
             overflow: hidden;
             display: flex;
-            justify-content: center;
-            align-items: center; /* 居中编辑器 */
+            flex-direction: column; /* 垂直布局 */
+        }
+
+        #dragBar {
+            display: flex;
+            justify-content: flex-end; /* 右对齐关闭按钮 */
+            background-color: #f0f0f0; /* 拖拽栏背景色 */
+            padding: 0px;
+            cursor: move; /* 拖拽光标 */
+        }
+
+        #closeButton {
+            cursor: pointer;
+            border: none; /* 移除边框 */
+            background-color: transparent; /* 初始背景色透明 */
+            color: black; /* 初始文本颜色 */
+            font-size: 16px; /* 字体大小 */
+            padding: 5px 10px; /* 内边距 */
+            transition: background-color 0.3s, color 0.3s; /* 过渡效果 */
+        }
+
+
+        #closeButton:hover {
+            background-color: red; /* 鼠标悬停时的背景色 */
+            color: white;
         }
 
         #editor {
-            width: 100%;
-            height: 100%;
+            flex-grow: 1; /* 占满剩余空间 */
+        }
+
+        #debugButtons {
+            background-color: #e0e0e0; /* 调试按钮栏背景色 */
+            padding: 5px;
+            display: flex; /* 水平排列按钮 */
+            justify-content: center; /* 居中按钮 */
+        }
+
+
+        .myGlyphMarginClass {
+            background-color: red;
+            border-radius: 50%; /* 使其成为圆形 */
+            margin-top: 5px; /* 调整位置以居中显示 */
+            margin-left: 30px;
+            cursor: pointer; /* 鼠标悬停时的样式 */
+        }
+
+        .gutter-pointer {
+            cursor: pointer;
         }
     </style>
     <!-- 引入 Monaco Editor 的 loader 脚本 -->
@@ -26,7 +66,15 @@
     <script src="debugPage.js"></script>
 </head>
 <body>
+<div id="dragBar">
+    <button id="closeButton">×</button>
+</div>
 <div id="editor"></div>
+<div id="debugButtons">
+    <button>Debug Button 1</button>
+    <button>Debug Button 2</button>
+    <!-- 更多按钮... -->
+</div>
 </body>
 </html>
 
