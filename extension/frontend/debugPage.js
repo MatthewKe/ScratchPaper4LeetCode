@@ -93,16 +93,21 @@ require(['vs/editor/editor.main'], function () {
     window.parent.postMessage({message: "debugPageInitialized"}, "*");
 
     var debugButton = document.getElementById("Debug Button 1");
-    debugButton.onclick = sendMessageToBackend;
+    debugButton.onclick = runCode;
 
     console.log("Monaco Editor initialized");
 
     const ip = "http://localhost:8080";
 
-    function sendMessageToBackend() {
+    function runCode() {
         //显示输出区
         let outputArea = document.getElementById('output');
-        let editorArea = document.getElementById('editor');
+        let editArea = document.getElementById('editor');
+        editArea.style.height = '173px';
+        console.log(editor);
+        editor.layout();
+        outputArea.style.height = '172px';
+        outputArea.style.display = 'inline';
 
         console.log("sendCodeToBackend");
         let jsonData = {
