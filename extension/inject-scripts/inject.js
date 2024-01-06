@@ -1,3 +1,9 @@
+function transform(type){
+    if(type=='java') return 'Java'
+    else if(type=='cpp') return 'C++'
+    return '';
+}
+
 var isProgrammaticChange = false;
 (function () {
     console.log("inject.js injected");
@@ -24,16 +30,16 @@ var isProgrammaticChange = false;
             });
             editor.onDidChangeLanguage(e => {
                 console.log("languageType change happened");
-                console.log(window.monaco?.editor.getModels()[0]._languageId);
+                //console.log(window.monaco?.editor.getModels()[0]._languageId);
                 iframe.contentWindow.postMessage({
                     message: "languageType",
-                    type: window.monaco?.editor.getModels()[0]._languageId
+                    type: transform(window.monaco?.editor.getModels()[0]._languageId)
                 }, "*");
             });
             
             iframe.contentWindow.postMessage({
                 message: "languageType",
-                type: window.monaco?.editor.getModels()[0]._languageId
+                type: transform(window.monaco?.editor.getModels()[0]._languageId)
             }, "*");
 
         } else if (ev.data && ev.data.message === "debugEditorChange") {
@@ -48,4 +54,3 @@ var isProgrammaticChange = false;
     window.dispatchEvent(new Event("injectJsInitialized"));
     console.log("inject.js Initialized");
 })();
-
