@@ -22,13 +22,13 @@ var isProgrammaticChange = false;
                     }, "*");
                 }
             });
+            
         } else if (ev.data && ev.data.message === "debugEditorChange") {
             console.log("receive message debugEditorChange");
             isProgrammaticChange = true;
             var originalCode = editor.getValue();
             var newSolutionCode = ev.data.context;
             var replacedCode = originalCode.replace(/class Solution \{[\s\S]*?\n\}/, newSolutionCode);
-            console.log("now replaceCode");
             editor.setValue(replacedCode);
         }
     });

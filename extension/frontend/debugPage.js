@@ -37,9 +37,9 @@ require(['vs/editor/editor.main'], function () {
             var replacedCode = originalCode.replace(/class Solution \{[\s\S]*?\n\}/, newSolutionCode);
             editor.setValue(replacedCode);
         }
-        if(ev.data.message === "languageType"){
+        if (ev.data.message === "languageType") {
             console.log("已传送");
-            console.log('是'+ev.data.type);
+            console.log('是' + ev.data.type);
             document.getElementById('language').innerText = ev.data.type;
         }
     })
@@ -126,6 +126,31 @@ require(['vs/editor/editor.main'], function () {
                 outputArea.innerText = result.message;
             }) // 处理结果
             .catch(error => console.log('error', error)); //
+    }
+
+    var debugButton = document.getElementById("Debug Button 2");
+    debugButton.onclick = debugCode;
+
+    function debugCode() {
+        let jsonData = {
+            context: context,
+            breakpointsLines: [7, 8]
+        };
+
+        let requestOptions = {
+            method: 'POST', // 请求方法
+            headers: {
+                'Content-Type': 'application/json' // 指定内容类型为 JSON
+            },
+            body: JSON.stringify(jsonData), // 将 JSON 对象转换为字符串
+            redirect: 'follow' // 自动重定向
+        };
+        fetch(ip + '/debugCode', requestOptions)
+            .then(response => response.json())
+            .then(result => {
+                console.log(result)
+            })
+            .catch(error => console.log('error', error));
     }
 
 

@@ -1,6 +1,7 @@
 package com.example.backend.controller;
 
 import com.example.backend.service.CompileException;
+import com.example.backend.service.DynamicDebugger;
 import com.example.backend.service.DynamicExecutor;
 import org.springframework.web.bind.annotation.*;
 
@@ -9,7 +10,6 @@ public class Controller {
 
     @PostMapping("/runCode")
     public Response runCode(@RequestBody Code code) {
-        System.out.println(code.getContext());
         Response response = new Response().setCode(200);
         try {
             String output=DynamicExecutor.execute(code.getContext());
@@ -31,11 +31,10 @@ public class Controller {
 
     @PostMapping("/debugCode")
     public Response debugCode(@RequestBody Code code) {
-        System.out.println(code.getContext());
         Response response = new Response().setCode(200);
         try {
-            String output=DynamicExecutor.execute(code.getContext());
-            response.setMessage(output);
+            DynamicDebugger dynamicDebugger = DynamicDebugger.getDynamicDebugger();
+            dynamicDebugger.debug(code);
         } catch (Exception e) {
             if(e instanceof CompileException){
                 response
