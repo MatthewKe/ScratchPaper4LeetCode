@@ -100,11 +100,12 @@ require(['vs/editor/editor.main'], function () {
         //显示输出区
         let outputArea = document.getElementById('output');
         let editArea = document.getElementById('editor');
-        editArea.style.height = '173px';
+        editArea.style.height = '170px';
         console.log(editor);
         editor.layout();
-        outputArea.style.height = '172px';
-        outputArea.style.display = 'inline';
+        document.getElementById('dragLine').style.height = '5px';
+        document.getElementById('dragLine').style.top = '200px';
+        outputArea.style.height = '170px';
 
         console.log("sendCodeToBackend");
         let jsonData = {
@@ -130,7 +131,52 @@ require(['vs/editor/editor.main'], function () {
             .catch(error => console.log('error', error)); //
     }
 
-    document.getElementById("Debug Button 2").onclick = () => {
+    let isDragging = false;
+    let dragStartY;
+    let preUp = 170;
+    let preDown = 170;
+    //拖拽条
+    let dragLine = document.getElementById('dragLine');
+    dragLine.addEventListener('mousedown', (e) => {
+        e.preventDefault();
+        // console.log("mousedown")
+        isDragging = true;
+        console.log(e.clientY)
+        console.log(dragLine.style.top)
+        dragStartY = e.clientY;
+        console.log(dragStartY)
+    });
+    document.addEventListener('mousemove', (e) => {
+        // console.log("mousemove")
+        if (!isDragging) return;
+        e.preventDefault();
+
+        let newY = e.clientY - dragStartY;
+
+        let outputArea = document.getElementById('output');
+        let editArea = document.getElementById('editor');
+        newUp = (preUp + newY)+'px';
+        newDown = (preDown - newY)+'px';
+
+        editArea.style.height = newUp;
+        console.log(editor);
+        editor.layout();
+        outputArea.style.height = newDown;
+    });
+    document.addEventListener('mouseup', () => {
+        // console.log("mouseup")
+        isDragging = false;
+    });
+
+    var debugButton = document.getElementById("debug");
+    debugButton.onclick = debugCode;
+
+    function debugCode() {
+        document.getElementById("step").style.display = 'inline';
+        document.getElementById("next").style.display = 'inline';
+        document.getElementById("stepUp").style.display = 'inline';
+        document.getElementById("cont").style.display = 'inline';
+
         let jsonData = {
             context: context,
             breakpointsLines: [7, 8]
@@ -152,7 +198,7 @@ require(['vs/editor/editor.main'], function () {
             .catch(error => console.log('error', error));
     }
 
-    document.getElementById("Debug Button 3").onclick = () => {
+    document.getElementById("step").onclick = () => {
         fetch(ip + '/debugCode', requestOptions)
             .then(response => response.json())
             .then(result => {
