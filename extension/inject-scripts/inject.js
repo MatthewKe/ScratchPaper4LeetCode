@@ -21,6 +21,7 @@ var isProgrammaticChange = false;
                         context: solutionClassCode
                     }, "*");
                 }
+                iframe.contentWindow.postMessage({message: "languageType", type: window.monaco?.editor.getModels()[0]._languageId}, "*");
             });
             
         } else if (ev.data && ev.data.message === "debugEditorChange") {

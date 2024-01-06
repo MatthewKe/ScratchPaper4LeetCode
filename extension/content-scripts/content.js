@@ -14,10 +14,12 @@ var iframe;
 
 var choosedLanguage;
 
+// 修改使用语言的同时变更语言注释
+
 function triggerFetchMonacoContext() {
     if (injectInitialized && debugPageInitialized) {
         iframe.contentWindow.postMessage({message: "debugPageInitializedWithContext"}, "*");
-        iframe.contentWindow.postMessage({message:"languageType", type:choosedLanguage}, "*");
+        //iframe.contentWindow.postMessage({message:"languageType", type:choosedLanguage}, "*");
         console.log("sendMessage debugPageInitializedWithContext");
     }
 }
@@ -41,9 +43,9 @@ chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
     console.log("popDebugger begins");
     injectScriptToAccessMonaco();
 // 针对leetcode的OJ页面选择出语言选择按钮
-    let languageButton = document.getElementsByClassName('rounded items-center whitespace-nowrap focus:outline-none inline-flex bg-transparent dark:bg-dark-transparent text-text-secondary dark:text-text-secondary active:bg-transparent dark:active:bg-dark-transparent hover:bg-fill-secondary dark:hover:bg-fill-secondary px-1.5 py-0.5 text-sm font-normal group')[0];
+    /*let languageButton = document.getElementsByClassName('rounded items-center whitespace-nowrap focus:outline-none inline-flex bg-transparent dark:bg-dark-transparent text-text-secondary dark:text-text-secondary active:bg-transparent dark:active:bg-dark-transparent hover:bg-fill-secondary dark:hover:bg-fill-secondary px-1.5 py-0.5 text-sm font-normal group')[0];
     console.log('语言：'+languageButton.textContent);
-    choosedLanguage = languageButton.textContent;
+    choosedLanguage = languageButton.textContent;*/
 // 创建 iframe
     iframe = document.createElement('iframe');
     iframe.id = 'debugPageIframe';

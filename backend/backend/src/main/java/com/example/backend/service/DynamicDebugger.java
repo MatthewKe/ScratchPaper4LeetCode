@@ -50,7 +50,7 @@ public class DynamicDebugger {
 
     public void debug(Code code) throws IOException, InterruptedException, CompileException, IllegalConnectorArgumentsException, VMStartException {
         ClassGenerator.generate(code.getContext());
-        debugClass= Main.class;
+//        debugClass= Main.class;
         breakPointLines=new int[]{7,9};
         VirtualMachine vm= connectAndLaunchVM();
         enableClassPrepareRequest(vm);
