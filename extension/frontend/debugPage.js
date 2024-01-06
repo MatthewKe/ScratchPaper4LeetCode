@@ -19,10 +19,9 @@ require(['vs/editor/editor.main'], function () {
             var match = context.match(solutionClassRegex);
             var solutionClassCode = match ? match[0] : null;
             window.parent.postMessage({message: "debugEditorChange", context: solutionClassCode}, "*");
-            console.log(solutionClassCode);
         }
     });
-    
+
     window.addEventListener("message", ev => {
         if (ev.data.message === "debugPageInitializedWithContext") {
             console.log("debugPage.js receive message debugPageInitializedWithContext");
