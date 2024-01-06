@@ -92,14 +92,11 @@ require(['vs/editor/editor.main'], function () {
 
     window.parent.postMessage({message: "debugPageInitialized"}, "*");
 
-    var debugButton = document.getElementById("Debug Button 1");
-    debugButton.onclick = runCode;
-
     console.log("Monaco Editor initialized");
 
     const ip = "http://localhost:8080";
 
-    function runCode() {
+    document.getElementById("run").onclick = () => {
         //显示输出区
         let outputArea = document.getElementById('output');
         let editArea = document.getElementById('editor');
@@ -133,10 +130,7 @@ require(['vs/editor/editor.main'], function () {
             .catch(error => console.log('error', error)); //
     }
 
-    var debugButton = document.getElementById("Debug Button 2");
-    debugButton.onclick = debugCode;
-
-    function debugCode() {
+    document.getElementById("Debug Button 2").onclick = () => {
         let jsonData = {
             context: context,
             breakpointsLines: [7, 8]
@@ -158,5 +152,13 @@ require(['vs/editor/editor.main'], function () {
             .catch(error => console.log('error', error));
     }
 
+    document.getElementById("Debug Button 3").onclick = () => {
+        fetch(ip + '/debugCode', requestOptions)
+            .then(response => response.json())
+            .then(result => {
+                console.log(result)
+            })
+            .catch(error => console.log('error', error));
+    };
 
 });
