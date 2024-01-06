@@ -51,13 +51,12 @@ chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
 // 创建覆盖层
     let dragCover = document.createElement('div');
     dragCover.style.position = 'fixed';
-    dragCover.style.top = '5px'; // 略小于 iframe 的 top 位置
-    dragCover.style.left = '5px'; // 略小于 iframe 的 left 位置
-    dragCover.style.width = '610px'; // 略大于 iframe 的宽度
-    dragCover.style.height = '410px'; // 略大于 iframe 的高度
-    dragCover.style.zIndex = '999'; // 确保比 iframe 稍低
-    // dragCover.style.opacity = '0'; // 完全透明
-    dragCover.style.backgroundColor = 'transparent'; // 透明背景
+    dragCover.style.top = '10px';
+    dragCover.style.left = '10px';
+    dragCover.style.width = '580px'; // 给关闭框留出位置
+    dragCover.style.height = '30px'; // 与拖动区的大小一致
+    dragCover.style.zIndex = '1001'; // 确保比 iframe 高，以出现在前方
+    dragCover.style.cursor = 'move'; // 使鼠标悬停时能够变换样式
 
 // 添加 iframe 和覆盖层到页面
     document.body.appendChild(iframe);
@@ -67,6 +66,8 @@ chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
 
 // 鼠标按下事件绑定到覆盖层
     dragCover.addEventListener('mousedown', (e) => {
+        // console.log("mousedown")
+        e.preventDefault();
         isDragging = true;
         dragStartX = e.clientX - parseInt(iframe.style.left, 10);
         dragStartY = e.clientY - parseInt(iframe.style.top, 10);
@@ -76,7 +77,9 @@ chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
 
 // 鼠标移动事件
     document.addEventListener('mousemove', (e) => {
+        // console.log("mousemove")
         if (!isDragging) return;
+        e.preventDefault();
         let newX = e.clientX - dragStartX;
         let newY = e.clientY - dragStartY;
         iframe.style.left = newX + 'px';
@@ -87,6 +90,7 @@ chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
 
 // 鼠标释放事件
     document.addEventListener('mouseup', () => {
+        // console.log("mouseup")
         isDragging = false;
         dragCover.style.cursor = 'default'; // 恢复鼠标指针样式
         iframe.style.pointerEvents = 'auto'; // 恢复 iframe 的鼠标事件

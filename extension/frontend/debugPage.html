@@ -18,7 +18,8 @@
             justify-content: flex-end; /* 右对齐关闭按钮 */
             background-color: #f0f0f0; /* 拖拽栏背景色 */
             padding: 0px;
-            cursor: move; /* 拖拽光标 */
+            height: 30px; /* 增加高度与覆盖层匹配 */
+            /* cursor: move; /* 拖拽光标 */
         }
 
         #closeButton {
@@ -71,8 +72,8 @@
 </div>
 <div id="editor"></div>
 <div id="debugButtons">
-    <button>Debug Button 1</button>
-    <button>Debug Button 2</button>
+    <button id="Debug Button 1">运行</button>
+    <button id="Debug Button 2">调试</button>
     <!-- 更多按钮... -->
 </div>
 </body>

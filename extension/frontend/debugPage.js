@@ -12,6 +12,7 @@ require(['vs/editor/editor.main'], function () {
 
     editor.onDidChangeModelContent(e => {
         console.log("change happened");
+        context = editor.getValue();
     });
 
 
@@ -68,13 +69,43 @@ require(['vs/editor/editor.main'], function () {
             console.log(newDecorations);
 
             decorations = editor.deltaDecorations(decorations, newDecorations);
-            
+
         }
     });
 
 
     window.parent.postMessage({message: "debugPageInitialized"}, "*");
 
+    var debugButton = document.getElementById("Debug Button 1");
+    debugButton.onclick = sendMessageToBackend;
+
     console.log("Monaco Editor initialized");
+
+
+    const ip = "http://localhost:8080";
+
+    function sendMessageToBackend() {
+        console.log("sendCodeToBackend");
+        // 定义要发送的 JSON 数据
+        let jsonData = {
+            context: context
+        };
+
+// 创建请求选项
+        let requestOptions = {
+            method: 'POST', // 请求方法
+            headers: {
+                'Content-Type': 'application/json' // 指定内容类型为 JSON
+            },
+            body: JSON.stringify(jsonData), // 将 JSON 对象转换为字符串
+            redirect: 'follow' // 自动重定向
+        };
+        var message = "hello world";
+        fetch(ip + '/sendCode', requestOptions)
+            .then(response => response.json()) // 转换响应为 JSON
+            .then(result => console.log(result)) // 处理结果
+            .catch(error => console.log('error', error)); //
+    }
+
 
 });
