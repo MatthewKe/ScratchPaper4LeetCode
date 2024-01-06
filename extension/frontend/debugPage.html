@@ -15,11 +15,19 @@
 
         #dragBar {
             display: flex;
-            justify-content: flex-end; /* 右对齐关闭按钮 */
+            text-align: left;
+            justify-content: space-between; /* 右对齐关闭按钮 */
             background-color: #f0f0f0; /* 拖拽栏背景色 */
             padding: 0px;
             height: 30px; /* 增加高度与覆盖层匹配 */
             /* cursor: move; /* 拖拽光标 */
+        }
+
+        #language {
+            display: flex; /* 与align-items一同工作，完成竖直方向上文字的居中 */
+            align-items: center;
+            padding: 2px 10px 4px 10px;
+            font-size: large;
         }
 
         #closeButton {
@@ -40,6 +48,16 @@
 
         #editor {
             flex-grow: 1; /* 占满剩余空间 */
+        }
+
+        #output {
+            background-color: yellow;
+            display: none;
+        }
+
+        #debugger {
+            background-color: green;
+            display: none;
         }
 
         #debugButtons {
@@ -68,9 +86,16 @@
 </head>
 <body>
 <div id="dragBar">
+    <div id="language"></div>
     <button id="closeButton">×</button>
 </div>
+
 <div id="editor"></div>
+
+<div id="output">程序运行中……</div>
+
+<div id="debugger"></div>
+
 <div id="debugButtons">
     <button id="Debug Button 1">运行</button>
     <button id="Debug Button 2">调试</button>

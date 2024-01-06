@@ -12,9 +12,12 @@ var injectInitialized = false;
 var debugPageInitialized = false;
 var iframe;
 
+var choosedLanguage;
+
 function triggerFetchMonacoContext() {
     if (injectInitialized && debugPageInitialized) {
         iframe.contentWindow.postMessage({message: "debugPageInitializedWithContext"}, "*");
+        iframe.contentWindow.postMessage({message:"languageType", type:choosedLanguage}, "*");
         console.log("sendMessage debugPageInitializedWithContext");
     }
 }
@@ -37,6 +40,10 @@ chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
     }
     console.log("popDebugger begins");
     injectScriptToAccessMonaco();
+// 针对leetcode的OJ页面选择出语言选择按钮
+    let languageButton = document.getElementsByClassName('rounded items-center whitespace-nowrap focus:outline-none inline-flex bg-transparent dark:bg-dark-transparent text-text-secondary dark:text-text-secondary active:bg-transparent dark:active:bg-dark-transparent hover:bg-fill-secondary dark:hover:bg-fill-secondary px-1.5 py-0.5 text-sm font-normal group')[0];
+    console.log('语言：'+languageButton.textContent);
+    choosedLanguage = languageButton.textContent;
 // 创建 iframe
     iframe = document.createElement('iframe');
     iframe.id = 'debugPageIframe';
@@ -61,6 +68,7 @@ chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
 // 添加 iframe 和覆盖层到页面
     document.body.appendChild(iframe);
     document.body.appendChild(dragCover);
+
     let isDragging = false;
     let dragStartX, dragStartY;
 

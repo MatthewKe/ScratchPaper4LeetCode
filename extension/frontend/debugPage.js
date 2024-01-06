@@ -37,6 +37,11 @@ require(['vs/editor/editor.main'], function () {
             var replacedCode = originalCode.replace(/class Solution \{[\s\S]*?\n\}/, newSolutionCode);
             editor.setValue(replacedCode);
         }
+        if(ev.data.message === "languageType"){
+            console.log("已传送");
+            console.log('是'+ev.data.type);
+            document.getElementById('language').innerText = ev.data.type;
+        }
     })
 
     var observer = new MutationObserver(mutations => {
@@ -95,11 +100,16 @@ require(['vs/editor/editor.main'], function () {
     const ip = "http://localhost:8080";
 
     function sendMessageToBackend() {
+        //显示输出区
+        let outputArea = document.getElementById('output');
+        let editorArea = document.getElementById('editor');
+
         console.log("sendCodeToBackend");
         let jsonData = {
             context: context,
             breakpointsLines: []
         };
+
         let requestOptions = {
             method: 'POST', // 请求方法
             headers: {
@@ -110,7 +120,11 @@ require(['vs/editor/editor.main'], function () {
         };
         fetch(ip + '/runCode', requestOptions)
             .then(response => response.json()) // 转换响应为 JSON
-            .then(result => console.log(result)) // 处理结果
+            .then(result => {
+                console.log(result)
+                // 输出结果，显示输出结果区域
+                outputArea.innerText = result.message;
+            }) // 处理结果
             .catch(error => console.log('error', error)); //
     }
 
