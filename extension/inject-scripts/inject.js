@@ -21,9 +21,21 @@ var isProgrammaticChange = false;
                         context: solutionClassCode
                     }, "*");
                 }
-                iframe.contentWindow.postMessage({message: "languageType", type: window.monaco?.editor.getModels()[0]._languageId}, "*");
+            });
+            editor.onDidChangeLanguage(e => {
+                console.log("languageType change happened");
+                console.log(window.monaco?.editor.getModels()[0]._languageId);
+                iframe.contentWindow.postMessage({
+                    message: "languageType",
+                    type: window.monaco?.editor.getModels()[0]._languageId
+                }, "*");
             });
             
+            iframe.contentWindow.postMessage({
+                message: "languageType",
+                type: window.monaco?.editor.getModels()[0]._languageId
+            }, "*");
+
         } else if (ev.data && ev.data.message === "debugEditorChange") {
             console.log("receive message debugEditorChange");
             isProgrammaticChange = true;
