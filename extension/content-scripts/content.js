@@ -2,9 +2,9 @@ function injectScriptToAccessMonaco() {
     const script = document.createElement('script');
     script.src = chrome.runtime.getURL('inject-scripts/inject.js');
     (document.head || document.documentElement).appendChild(script);
-    script.onload = function () {
-        this.remove();
-    };
+    // script.onload = function () {
+    //     this.remove();
+    // };
     console.log("injectScriptToAccessMonaco ends");
 }
 

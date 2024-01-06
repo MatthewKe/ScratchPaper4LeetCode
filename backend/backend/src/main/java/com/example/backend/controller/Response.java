@@ -4,7 +4,6 @@ public class Response {
     private String message;
     private int code;
 
-    // 标准的 getters 和 setters
     public String getMessage() {
         return message;
     }

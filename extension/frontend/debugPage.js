@@ -8,23 +8,35 @@ require(['vs/editor/editor.main'], function () {
         language: 'java',
         glyphMargin: true // 启用装订线边距
     });
-
-
+    var isProgrammaticChange = false;
     editor.onDidChangeModelContent(e => {
         console.log("change happened");
-        context = editor.getValue();
+        if (isProgrammaticChange) {
+            isProgrammaticChange = false
+        } else {
+            context = editor.getValue();
+            var solutionClassRegex = /class Solution \{[\s\S]*?\n\}/;
+            var match = context.match(solutionClassRegex);
+            var solutionClassCode = match ? match[0] : null;
+            window.parent.postMessage({message: "debugEditorChange", context: solutionClassCode}, "*");
+            console.log(solutionClassCode);
+        }
     });
-
-
+    
     window.addEventListener("message", ev => {
         if (ev.data.message === "debugPageInitializedWithContext") {
             console.log("debugPage.js receive message debugPageInitializedWithContext");
             window.parent.postMessage({message: "fetchContext"}, "*");
-        }
-        if (ev.data.message === "context") {
+        } else if (ev.data.message === "context") {
             console.log("debugPage.js receive message context");
             context = ev.data.context;
             editor.setValue(context);
+        } else if (ev.data.message === "leetcodeEditorChange") {
+            isProgrammaticChange = true;
+            var originalCode = editor.getValue();
+            var newSolutionCode = ev.data.context;
+            var replacedCode = originalCode.replace(/class Solution \{[\s\S]*?\n\}/, newSolutionCode);
+            editor.setValue(replacedCode);
         }
     })
 
@@ -81,17 +93,14 @@ require(['vs/editor/editor.main'], function () {
 
     console.log("Monaco Editor initialized");
 
-
     const ip = "http://localhost:8080";
 
     function sendMessageToBackend() {
         console.log("sendCodeToBackend");
-        // 定义要发送的 JSON 数据
         let jsonData = {
-            context: context
+            context: context,
+            breakpointsLines: []
         };
-
-// 创建请求选项
         let requestOptions = {
             method: 'POST', // 请求方法
             headers: {
@@ -100,8 +109,7 @@ require(['vs/editor/editor.main'], function () {
             body: JSON.stringify(jsonData), // 将 JSON 对象转换为字符串
             redirect: 'follow' // 自动重定向
         };
-        var message = "hello world";
-        fetch(ip + '/sendCode', requestOptions)
+        fetch(ip + '/runCode', requestOptions)
             .then(response => response.json()) // 转换响应为 JSON
             .then(result => console.log(result)) // 处理结果
             .catch(error => console.log('error', error)); //
