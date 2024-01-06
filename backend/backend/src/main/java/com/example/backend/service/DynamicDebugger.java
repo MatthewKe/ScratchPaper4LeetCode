@@ -10,7 +10,6 @@ import com.sun.jdi.connect.VMStartException;
 import com.sun.jdi.event.Event;
 import com.sun.jdi.event.EventSet;
 import com.sun.jdi.request.ClassPrepareRequest;
-import sourcecode.Main;
 
 import java.io.*;
 import java.util.Map;
