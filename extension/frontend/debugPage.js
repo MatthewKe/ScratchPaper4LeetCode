@@ -271,9 +271,7 @@ require(['vs/editor/editor.main'], function () {
             fetch(ip + '/debugCode', requestOptions)
                 .then(response => response.json())
                 .then(result => {
-                    console.log(result);
-                    lineToHighlight = result.debugInfo.currentLine;
-                    decorateEditor();
+                    debugStep(result);
                 })
                 .catch(error => console.log('error', error));
         }
@@ -284,9 +282,7 @@ require(['vs/editor/editor.main'], function () {
         fetch(ip + '/step')
             .then(response => response.json())
             .then(result => {
-                console.log(result);
-                lineToHighlight = result.debugInfo.currentLine;
-                decorateEditor();
+                debugStep(result);
             })
             .catch(error => console.log('error', error));
     };
@@ -295,9 +291,7 @@ require(['vs/editor/editor.main'], function () {
         fetch(ip + '/next')
             .then(response => response.json())
             .then(result => {
-                console.log(result);
-                lineToHighlight = result.debugInfo.currentLine;
-                decorateEditor();
+                debugStep(result);
             })
             .catch(error => console.log('error', error));
     };
@@ -306,9 +300,7 @@ require(['vs/editor/editor.main'], function () {
         fetch(ip + '/stepUp')
             .then(response => response.json())
             .then(result => {
-                console.log(result);
-                lineToHighlight = result.debugInfo.currentLine;
-                decorateEditor();
+                debugStep(result);
             })
             .catch(error => console.log('error', error));
     };
@@ -317,12 +309,25 @@ require(['vs/editor/editor.main'], function () {
         fetch(ip + '/cont')
             .then(response => response.json())
             .then(result => {
-                console.log(result);
-                lineToHighlight = result.debugInfo.currentLine;
-                decorateEditor();
+                debugStep(result);
             })
             .catch(error => console.log('error', error));
     };
+
+    document.getElementById("exit").onclick = () => {
+        fetch(ip + '/exit')
+            .then(response => response.json())
+            .then(result => {
+                debugStep(result);
+            })
+            .catch(error => console.log('error', error));
+    };
+
+    function debugStep(result) {
+        console.log(result);
+        lineToHighlight = result.debugInfo.currentLine;
+        decorateEditor();
+    }
 
 
 })
