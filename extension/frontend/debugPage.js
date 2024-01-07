@@ -1,4 +1,4 @@
-require.config({paths: {'vs': '../lib/min/vs'}});
+require.config({ paths: { 'vs': '../lib/min/vs' } });
 require(['vs/editor/editor.main'], function () {
 
     var context = null;
@@ -18,14 +18,14 @@ require(['vs/editor/editor.main'], function () {
             var solutionClassRegex = /class Solution \{[\s\S]*?\n\}/;
             var match = context.match(solutionClassRegex);
             var solutionClassCode = match ? match[0] : null;
-            window.parent.postMessage({message: "debugEditorChange", context: solutionClassCode}, "*");
+            window.parent.postMessage({ message: "debugEditorChange", context: solutionClassCode }, "*");
         }
     });
 
     window.addEventListener("message", ev => {
         if (ev.data.message === "debugPageInitializedWithContext") {
             console.log("debugPage.js receive message debugPageInitializedWithContext");
-            window.parent.postMessage({message: "fetchContext"}, "*");
+            window.parent.postMessage({ message: "fetchContext" }, "*");
         } else if (ev.data.message === "context") {
             console.log("debugPage.js receive message context");
             context = ev.data.context;
@@ -55,7 +55,7 @@ require(['vs/editor/editor.main'], function () {
             }
         });
     });
-    observer.observe(document.body, {childList: true, subtree: true});
+    observer.observe(document.body, { childList: true, subtree: true });
 
 
     var decorations = []; // 当前的装饰数组
@@ -78,7 +78,7 @@ require(['vs/editor/editor.main'], function () {
             breakpointsLines.forEach(i => {
                 var newDecoration = {
                     range: new monaco.Range(i, 1, i, 1),
-                    options: {isWholeLine: true, glyphMarginClassName: 'myGlyphMarginClass'}
+                    options: { isWholeLine: true, glyphMarginClassName: 'myGlyphMarginClass' }
                 };
                 newDecorations.push(newDecoration);
             })
@@ -90,7 +90,7 @@ require(['vs/editor/editor.main'], function () {
     });
 
 
-    window.parent.postMessage({message: "debugPageInitialized"}, "*");
+    window.parent.postMessage({ message: "debugPageInitialized" }, "*");
 
     console.log("Monaco Editor initialized");
 
@@ -135,37 +135,47 @@ require(['vs/editor/editor.main'], function () {
     let dragStartY;
     let preUp = 170;
     let preDown = 170;
+    let newUp, newDown;
     //拖拽条
     let dragLine = document.getElementById('dragLine');
     dragLine.addEventListener('mousedown', (e) => {
         e.preventDefault();
         // console.log("mousedown")
         isDragging = true;
-        console.log(e.clientY)
-        console.log(dragLine.style.top)
         dragStartY = e.clientY;
-        console.log(dragStartY)
+        console.log(newUp)
+        console.log(newDown)
+        if (newUp != undefined && newDown != undefined) {
+            console.log("有效")
+            preUp = newUp
+            preDown = newDown
+        }
     });
     document.addEventListener('mousemove', (e) => {
         // console.log("mousemove")
         if (!isDragging) return;
         e.preventDefault();
 
-        let newY = e.clientY - dragStartY;
+        let length = e.clientY - dragStartY;
 
         let outputArea = document.getElementById('output');
         let editArea = document.getElementById('editor');
-        newUp = (preUp + newY)+'px';
-        newDown = (preDown - newY)+'px';
+        newUp = (preUp + length);
+        newDown = (preDown - length);
 
-        editArea.style.height = newUp;
-        console.log(editor);
+        editArea.style.height = newUp + 'px';
         editor.layout();
-        outputArea.style.height = newDown;
+        outputArea.style.height = newDown + 'px';
     });
     document.addEventListener('mouseup', () => {
         // console.log("mouseup")
+        console.log(newUp)
+        console.log(newDown)
+        //preUp = newUp
+        //preDown = newDown
         isDragging = false;
+        console.log("停止拖拽")
+
     });
 
     var debugButton = document.getElementById("debug");
