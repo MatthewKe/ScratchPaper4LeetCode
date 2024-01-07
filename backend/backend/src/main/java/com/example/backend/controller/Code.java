@@ -3,7 +3,7 @@ package com.example.backend.controller;
 public class Code {
     private String context;
 
-    private int[] breakPoints;
+    private int[] breakpointsLines;
 
     public String getContext() {
         return context;
@@ -14,12 +14,12 @@ public class Code {
         return this;
     }
 
-    public int[] getBreakPoints() {
-        return breakPoints;
+    public int[] getBreakpointsLines() {
+        return breakpointsLines;
     }
 
-    public Code setBreakPoints(int[] breakPoints) {
-        this.breakPoints = breakPoints;
+    public Code setBreakpointsLines(int[] breakpointsLines) {
+        this.breakpointsLines = breakpointsLines;
         return this;
     }
 }

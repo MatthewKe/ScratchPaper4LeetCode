@@ -12,14 +12,14 @@ public class Controller {
     public Response runCode(@RequestBody Code code) {
         Response response = new Response().setCode(200);
         try {
-            String output=DynamicExecutor.execute(code.getContext());
+            String output = DynamicExecutor.execute(code.getContext());
             response.setMessage(output);
         } catch (Exception e) {
-            if(e instanceof CompileException){
+            if (e instanceof CompileException) {
                 response
                         .setMessage(e.getMessage())
                         .setCode(400);
-            }else {
+            } else {
                 response
                         .setMessage(e.getMessage())
                         .setCode(500);
@@ -34,19 +34,20 @@ public class Controller {
         Response response = new Response().setCode(200);
         try {
             DynamicDebugger dynamicDebugger = DynamicDebugger.getDynamicDebugger();
-            dynamicDebugger.debug(code);
+            DebugInfo debugInfo = dynamicDebugger.debug(code);
+            response.setDebugInfo(debugInfo);
         } catch (Exception e) {
-            if(e instanceof CompileException){
+            if (e instanceof CompileException) {
                 response
                         .setMessage(e.getMessage())
                         .setCode(400);
-            }else {
+            } else {
                 response
                         .setMessage(e.getMessage())
                         .setCode(500);
             }
         }
-        System.out.println(response.getMessage());
+        System.out.println(response);
         return response;
     }
 }

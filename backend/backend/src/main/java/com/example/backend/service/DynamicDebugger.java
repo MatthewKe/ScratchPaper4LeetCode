@@ -1,24 +1,21 @@
 package com.example.backend.service;
 
 import com.example.backend.controller.Code;
-import com.sun.jdi.Bootstrap;
-import com.sun.jdi.VirtualMachine;
-import com.sun.jdi.connect.Connector;
-import com.sun.jdi.connect.IllegalConnectorArgumentsException;
-import com.sun.jdi.connect.LaunchingConnector;
-import com.sun.jdi.connect.VMStartException;
-import com.sun.jdi.event.Event;
-import com.sun.jdi.event.EventSet;
-import com.sun.jdi.request.ClassPrepareRequest;
+import com.example.backend.controller.DebugInfo;
+
 
 import java.io.*;
-import java.util.Map;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class DynamicDebugger {
     Process jdbProcess;
+    OutputStreamWriter outputStreamWriter;
+    BufferedReader bufferedReader;
     private int[] breakPointLines;
 
-    private Thread thread;
 
     public int[] getBreakPointLines() {
         return breakPointLines;
@@ -30,42 +27,111 @@ public class DynamicDebugger {
 
     private static DynamicDebugger dynamicDebugger;
 
-    private DynamicDebugger(){
+    private DynamicDebugger() {
 
     }
 
-    public static DynamicDebugger getDynamicDebugger(){
-        if(dynamicDebugger==null){
+    public static DynamicDebugger getDynamicDebugger() {
+        if (dynamicDebugger == null) {
             dynamicDebugger = new DynamicDebugger();
         }
         return dynamicDebugger;
     }
 
-    public void debug(Code code) throws IOException, InterruptedException, CompileException, IllegalConnectorArgumentsException, VMStartException {
+    public DebugInfo debug(Code code) throws IOException, InterruptedException, CompileException {
         ClassGenerator.generate(code.getContext());
-        breakPointLines=code.getBreakPoints();
-
-        jdbProcess = Runtime.getRuntime().exec("jdb -classpath src/main/java sourcecode.Main");
-        // 准备用于发送命令的 Writer
-        OutputStreamWriter outputStreamWriter = new OutputStreamWriter(jdbProcess.getOutputStream(),"GBK");
-
-        // 向 jdb 发送命令
-        outputStreamWriter.write("help\n"); // 示例命令
-        outputStreamWriter.flush();
-
-        // 准备读取 jdb 的输出
-        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(jdbProcess.getInputStream(),"GBK"));
-
-        // 读取输出
-        String line;
-        while ((line = bufferedReader.readLine()) != null) {
-            System.out.println(line);
+        breakPointLines = code.getBreakpointsLines();
+        if (jdbProcess != null) {
+            jdbProcess.destroyForcibly();
+            outputStreamWriter.close();
+            bufferedReader.close();
         }
-
-        // 关闭资源
-        outputStreamWriter.close();
-        bufferedReader.close();
-        jdbProcess.waitFor();
+        jdbProcess = Runtime.getRuntime().exec("jdb -classpath src/main/java sourcecode.Main");
+        outputStreamWriter = new OutputStreamWriter(jdbProcess.getOutputStream(), "GBK");
+        bufferedReader = new BufferedReader(new InputStreamReader(jdbProcess.getInputStream(), "GBK"));
+        //正在初始化jdb...
+        jdbReader();
+        //写入断点
+        for (int i : breakPointLines) {
+            i++;
+            jdbWriter("stop at sourcecode.Solution:" + i);
+            jdbReader();
+        }
+        //run
+        jdbWriter("run");
+        // 运行sourcecode.Main
+        //设置未捕获的java.lang.Throwable
+        //设置延迟的未捕获的java.lang.Throwable
+        jdbReader();
+        //VM 已启动: 设置延迟的断点sourcecode.Solution:19
+        //设置延迟的断点sourcecode.Solution:16
+        //
+        //断点命中: "线程=main", sourcecode.Solution.construct(), 行=16 bci=0
+        //16            if (left > right) {
+        String output = jdbReader();
+        int currentLine = extractLineNum(output);
+        DebugInfo debugInfo = new DebugInfo();
+        debugInfo.setCurrentLine(currentLine);
+        extractVariables(debugInfo);
+        return debugInfo;
     }
 
+    private void extractVariables(DebugInfo debugInfo) throws IOException {
+        jdbWriter("locals");
+        String output = jdbReader();
+        String[] outputLines = output.split("\r");
+        for (String str : outputLines) {
+            Pattern pattern = Pattern.compile("(\\w+)\\ =\\ (.+)");
+            Matcher matcher = pattern.matcher(str);
+            if (matcher.find()) {
+                String key = matcher.group(1);
+                String value = matcher.group(2);
+                debugInfo.addVariable(Collections.singletonMap(key, value));
+            }
+        }
+    }
+
+    private int extractLineNum(String str) {
+        Pattern pattern = Pattern.compile("行=(\\d+)");
+        Matcher matcher = pattern.matcher(str);
+        String lineNumber = null;
+        if (matcher.find()) {
+            lineNumber = matcher.group(1);
+            System.out.println("提取的行号: " + lineNumber);
+        } else {
+            System.out.println("没有找到匹配的行号");
+        }
+        return Integer.parseInt(lineNumber);
+    }
+
+    private void jdbWriter(String str) throws IOException {
+        outputStreamWriter.write(str + "\n");
+        outputStreamWriter.flush();
+    }
+
+
+    private String jdbReader() throws IOException {
+        System.out.println("-----");
+        StringBuilder lineBuilder = new StringBuilder();
+        StringBuilder outputBuilder = new StringBuilder();
+        int intChar;
+        while ((intChar = bufferedReader.read()) != -1) {
+            char character = (char) intChar;
+            if (character == '\n') {
+                outputBuilder.append(lineBuilder.toString());
+                System.out.println(lineBuilder);
+                lineBuilder = new StringBuilder();
+            } else if (character == '>' && lineBuilder.isEmpty()) {
+                break;
+            } else if (character == ']' && lineBuilder.toString().equals("main[1")) {
+                break;
+            } else {
+                lineBuilder.append(character);
+            }
+        }
+        System.out.println(outputBuilder.length());
+        return outputBuilder.toString();
+    }
 }
+
+

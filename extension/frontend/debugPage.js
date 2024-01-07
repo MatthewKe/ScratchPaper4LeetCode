@@ -100,11 +100,12 @@ require(['vs/editor/editor.main'], function () {
         //显示输出区
         let outputArea = document.getElementById('output');
         let editArea = document.getElementById('editor');
-        editArea.style.height = '173px';
+        editArea.style.height = '170px';
         console.log(editor);
         editor.layout();
-        outputArea.style.height = '172px';
-        outputArea.style.display = 'inline';
+        document.getElementById('dragLine').style.height = '5px';
+        document.getElementById('dragLine').style.top = '200px';
+        outputArea.style.height = '170px';
 
         console.log("sendCodeToBackend");
         let jsonData = {
@@ -130,29 +131,88 @@ require(['vs/editor/editor.main'], function () {
             .catch(error => console.log('error', error)); //
     }
 
-    document.getElementById("debug").onclick = () => {
-        let jsonData = {
-            context: context,
-            breakpointsLines: [7, 8]
-        };
 
-        let requestOptions = {
-            method: 'POST', // 请求方法
-            headers: {
-                'Content-Type': 'application/json' // 指定内容类型为 JSON
-            },
-            body: JSON.stringify(jsonData), // 将 JSON 对象转换为字符串
-            redirect: 'follow' // 自动重定向
-        };
-        fetch(ip + '/debugCode', requestOptions)
-            .then(response => response.json())
-            .then(result => {
-                console.log(result)
-            })
-            .catch(error => console.log('error', error));
+    document.getElementById("debug").onclick = () => {
+        let isDragging = false;
+        let dragStartY;
+        let preUp = 170;
+        let preDown = 170;
+        let newUp, newDown;
+        //拖拽条
+        let dragLine = document.getElementById('dragLine');
+        dragLine.addEventListener('mousedown', (e) => {
+            e.preventDefault();
+            // console.log("mousedown")
+            isDragging = true;
+            dragStartY = e.clientY;
+            console.log(newUp)
+            console.log(newDown)
+            if (newUp != undefined && newDown != undefined) {
+                console.log("有效")
+                preUp = newUp
+                preDown = newDown
+            }
+        });
+        document.addEventListener('mousemove', (e) => {
+            // console.log("mousemove")
+            if (!isDragging) return;
+            e.preventDefault();
+
+            let length = e.clientY - dragStartY;
+
+            let outputArea = document.getElementById('output');
+            let editArea = document.getElementById('editor');
+            newUp = (preUp + length);
+            newDown = (preDown - length);
+
+            editArea.style.height = newUp + 'px';
+            editor.layout();
+            outputArea.style.height = newDown + 'px';
+        });
+        document.addEventListener('mouseup', () => {
+            // console.log("mouseup")
+            console.log(newUp)
+            console.log(newDown)
+            //preUp = newUp
+            //preDown = newDown
+            isDragging = false;
+            console.log("停止拖拽")
+
+        });
+
+        var debugButton = document.getElementById("debug");
+        debugButton.onclick = debugCode;
+
+        function debugCode() {
+            document.getElementById("step").style.display = 'inline';
+            document.getElementById("next").style.display = 'inline';
+            document.getElementById("stepUp").style.display = 'inline';
+            document.getElementById("cont").style.display = 'inline';
+
+            let jsonData = {
+                context: context,
+                breakpointsLines: [25]
+            };
+
+            let requestOptions = {
+                method: 'POST', // 请求方法
+                headers: {
+                    'Content-Type': 'application/json' // 指定内容类型为 JSON
+                },
+                body: JSON.stringify(jsonData), // 将 JSON 对象转换为字符串
+                redirect: 'follow' // 自动重定向
+            };
+            fetch(ip + '/debugCode', requestOptions)
+                .then(response => response.json())
+                .then(result => {
+                    console.log(result)
+                })
+                .catch(error => console.log('error', error));
+        }
     }
 
     document.getElementById("step").onclick = () => {
+
         fetch(ip + '/step', requestOptions)
             .then(response => response.json())
             .then(result => {
@@ -187,4 +247,4 @@ require(['vs/editor/editor.main'], function () {
             })
             .catch(error => console.log('error', error));
     };
-});
+})
