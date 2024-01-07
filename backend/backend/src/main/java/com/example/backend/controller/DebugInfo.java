@@ -6,6 +6,7 @@ import java.util.Map;
 import java.util.regex.Pattern;
 
 public class DebugInfo {
+    String message;
     int currentLine;
     List<Map<String, String>> variables = new ArrayList<>();
 
@@ -43,10 +44,19 @@ public class DebugInfo {
         treeNodes.add(treeNode);
     }
 
+    public String getMessage() {
+        return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
+    }
+
     @Override
     public String toString() {
         return "DebugInfo{" +
-                "currentLine=" + currentLine +
+                "message='" + message + '\'' +
+                ", currentLine=" + currentLine +
                 ", variables=" + variables +
                 ", treeNodes=" + treeNodes +
                 '}';

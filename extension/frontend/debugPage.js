@@ -1,10 +1,66 @@
 require.config({paths: {'vs': '../lib/min/vs'}});
 require(['vs/editor/editor.main'], function () {
 
-    var context = null;
-
+    var context = 'public class Main {\n' +
+        '    public static void main(String[] args) {\n' +
+        '        Solution solution = new Solution();\n' +
+        '        solution.constructMaximumBinaryTree(new int[]{1, 2, 3});\n' +
+        '        System.out.println("hello world");\n' +
+        '    }\n' +
+        '}\n' +
+        '\n' +
+        'class Solution {\n' +
+        '    public TreeNode constructMaximumBinaryTree(int[] nums) {\n' +
+        '        return construct(nums, 0, nums.length - 1);\n' +
+        '    }\n' +
+        '\n' +
+        '    public TreeNode construct(int[] nums, int left, int right) {\n' +
+        '        if (left > right) {\n' +
+        '            return null;\n' +
+        '        }\n' +
+        '        int best = left;\n' +
+        '        for (int i = left + 1; i <= right; ++i) {\n' +
+        '            if (nums[i] > nums[best]) {\n' +
+        '                best = i;\n' +
+        '            }\n' +
+        '        }\n' +
+        '        TreeNode node = new TreeNode(nums[best]);\n' +
+        '        node.left = construct(nums, left, best - 1);\n' +
+        '        node.right = construct(nums, best + 1, right);\n' +
+        '        return node;\n' +
+        '    }\n' +
+        '}';
+    var value = '/**\nfailed to fetch context\n*/';
     var editor = monaco.editor.create(document.getElementById('editor'), {
-        value: '/**\nfailed to fetch context\n*/',
+        value: 'public class Main {\n' +
+            '    public static void main(String[] args) {\n' +
+            '        Solution solution = new Solution();\n' +
+            '        solution.constructMaximumBinaryTree(new int[]{1, 2, 3});\n' +
+            '        System.out.println("hello world");\n' +
+            '    }\n' +
+            '}\n' +
+            '\n' +
+            'class Solution {\n' +
+            '    public TreeNode constructMaximumBinaryTree(int[] nums) {\n' +
+            '        return construct(nums, 0, nums.length - 1);\n' +
+            '    }\n' +
+            '\n' +
+            '    public TreeNode construct(int[] nums, int left, int right) {\n' +
+            '        if (left > right) {\n' +
+            '            return null;\n' +
+            '        }\n' +
+            '        int best = left;\n' +
+            '        for (int i = left + 1; i <= right; ++i) {\n' +
+            '            if (nums[i] > nums[best]) {\n' +
+            '                best = i;\n' +
+            '            }\n' +
+            '        }\n' +
+            '        TreeNode node = new TreeNode(nums[best]);\n' +
+            '        node.left = construct(nums, left, best - 1);\n' +
+            '        node.right = construct(nums, best + 1, right);\n' +
+            '        return node;\n' +
+            '    }\n' +
+            '}',
         language: 'java',
         glyphMargin: true // 启用装订线边距
     });
@@ -58,8 +114,9 @@ require(['vs/editor/editor.main'], function () {
     observer.observe(document.body, {childList: true, subtree: true});
 
 
-    var decorations = []; // 当前的装饰数组
+    var decorations = [];
     var breakpointsLines = [];
+    var lineToHighlight = -1;
 
     editor.onMouseDown(e => {
         if (
@@ -72,22 +129,31 @@ require(['vs/editor/editor.main'], function () {
             } else {
                 breakpointsLines.push(lineNumber);
             }
-            console.log(lineNumber)
-            console.log(breakpointsLines);
-            var newDecorations = [];
-            breakpointsLines.forEach(i => {
-                var newDecoration = {
-                    range: new monaco.Range(i, 1, i, 1),
-                    options: {isWholeLine: true, glyphMarginClassName: 'myGlyphMarginClass'}
-                };
-                newDecorations.push(newDecoration);
-            })
-            console.log(newDecorations);
-
-            decorations = editor.deltaDecorations(decorations, newDecorations);
-
+            decorateEditor();
         }
     });
+
+    function decorateEditor() {
+        var newDecorations = [];
+        breakpointsLines.forEach(i => {
+            var newDecoration = {
+                range: new monaco.Range(i, 1, i, 1),
+                options: {isWholeLine: true, glyphMarginClassName: 'myGlyphMarginClass'}
+            };
+            newDecorations.push(newDecoration);
+        })
+        if (lineToHighlight > 0) {
+            newDecorations.push({
+                range: new monaco.Range(lineToHighlight, 1, lineToHighlight, 1),
+                options: {
+                    isWholeLine: true,
+                    className: '.lineHighLight'
+                }
+            });
+        }
+        console.log(newDecorations);
+        decorations = editor.deltaDecorations(decorations, newDecorations);
+    }
 
 
     window.parent.postMessage({message: "debugPageInitialized"}, "*");
@@ -191,7 +257,7 @@ require(['vs/editor/editor.main'], function () {
 
             let jsonData = {
                 context: context,
-                breakpointsLines: [25]
+                breakpointsLines: breakpointsLines
             };
 
             let requestOptions = {
@@ -205,7 +271,9 @@ require(['vs/editor/editor.main'], function () {
             fetch(ip + '/debugCode', requestOptions)
                 .then(response => response.json())
                 .then(result => {
-                    console.log(result)
+                    console.log(result);
+                    lineToHighlight = result.debugInfo.currentLine;
+                    decorateEditor();
                 })
                 .catch(error => console.log('error', error));
         }
@@ -216,7 +284,9 @@ require(['vs/editor/editor.main'], function () {
         fetch(ip + '/step')
             .then(response => response.json())
             .then(result => {
-                console.log(result)
+                console.log(result);
+                lineToHighlight = result.debugInfo.currentLine;
+                decorateEditor();
             })
             .catch(error => console.log('error', error));
     };
@@ -225,7 +295,9 @@ require(['vs/editor/editor.main'], function () {
         fetch(ip + '/next')
             .then(response => response.json())
             .then(result => {
-                console.log(result)
+                console.log(result);
+                lineToHighlight = result.debugInfo.currentLine;
+                decorateEditor();
             })
             .catch(error => console.log('error', error));
     };
@@ -234,7 +306,9 @@ require(['vs/editor/editor.main'], function () {
         fetch(ip + '/stepUp')
             .then(response => response.json())
             .then(result => {
-                console.log(result)
+                console.log(result);
+                lineToHighlight = result.debugInfo.currentLine;
+                decorateEditor();
             })
             .catch(error => console.log('error', error));
     };
@@ -243,8 +317,12 @@ require(['vs/editor/editor.main'], function () {
         fetch(ip + '/cont')
             .then(response => response.json())
             .then(result => {
-                console.log(result)
+                console.log(result);
+                lineToHighlight = result.debugInfo.currentLine;
+                decorateEditor();
             })
             .catch(error => console.log('error', error));
     };
+
+
 })

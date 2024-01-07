@@ -47,10 +47,12 @@
         ]
     };
 
+
     var svg = d3.select("svg"),
         width = +svg.attr("width"),
         height = +svg.attr("height"),
-        container = svg.append("g").attr("transform", "translate(0,40)"); // 向下移动树的起始位置
+        container = svg.append("g").attr("transform", "translate(0,40)");
+
 
     svg.call(d3.zoom().on("zoom", function (event) {
         container.attr("transform", event.transform);
@@ -72,6 +74,7 @@
             return "M" + d.source.x + "," + d.source.y
                 + "L" + d.target.x + "," + d.target.y;
         });
+
 
     var node = container.selectAll(".node")
         .data(treeNodes.descendants())

@@ -1,17 +1,17 @@
-package sourcecode;
+package com.example.backend.service;
 
-class TreeNode {
+public class TreeNode {
     static int idCounter = 0;
     int id;
     int val;
-    TreeNode left;
-    TreeNode right;
+    public TreeNode left;
+    public TreeNode right;
 
     TreeNode() {
         id = idCounter++;
     }
 
-    TreeNode(int val) {
+    public TreeNode(int val) {
         this.val = val;
         id = idCounter++;
     }
