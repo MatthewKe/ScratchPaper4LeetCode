@@ -213,7 +213,7 @@ require(['vs/editor/editor.main'], function () {
 
     document.getElementById("step").onclick = () => {
 
-        fetch(ip + '/step', requestOptions)
+        fetch(ip + '/step')
             .then(response => response.json())
             .then(result => {
                 console.log(result)
@@ -222,7 +222,7 @@ require(['vs/editor/editor.main'], function () {
     };
 
     document.getElementById("next").onclick = () => {
-        fetch(ip + '/next', requestOptions)
+        fetch(ip + '/next')
             .then(response => response.json())
             .then(result => {
                 console.log(result)
@@ -231,7 +231,7 @@ require(['vs/editor/editor.main'], function () {
     };
 
     document.getElementById("stepUp").onclick = () => {
-        fetch(ip + '/stepUp', requestOptions)
+        fetch(ip + '/stepUp')
             .then(response => response.json())
             .then(result => {
                 console.log(result)
@@ -240,7 +240,7 @@ require(['vs/editor/editor.main'], function () {
     };
 
     document.getElementById("cont").onclick = () => {
-        fetch(ip + '/cont', requestOptions)
+        fetch(ip + '/cont')
             .then(response => response.json())
             .then(result => {
                 console.log(result)
