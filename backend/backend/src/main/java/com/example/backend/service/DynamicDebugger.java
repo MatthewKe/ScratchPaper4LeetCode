@@ -83,10 +83,29 @@ public class DynamicDebugger {
         for (String str : outputLines) {
             Pattern pattern = Pattern.compile("(\\w+)\\ =\\ (.+)");
             Matcher matcher = pattern.matcher(str);
-            if (matcher.find()) {
-                String key = matcher.group(1);
-                String value = matcher.group(2);
-                debugInfo.addVariable(Collections.singletonMap(key, value));
+            if (!matcher.find()) {
+                continue;
+            }
+
+            String key = matcher.group(1);
+            String value = matcher.group(2);
+            debugInfo.addVariable(Collections.singletonMap(key, value));
+            if (value.contains("TreeNode")) {
+                jdbWriter("dump " + key);
+                // node = {
+                //    idCounter: 1
+                //    id: 0
+                //    val: 3
+                //    left: null
+                //    right: null
+                //}
+                output = jdbReader();
+                pattern = Pattern.compile("idCounter:\\ (\\d+)");
+                matcher = pattern.matcher(output);
+                if (matcher.find()) {
+                    int id = Integer.parseInt(matcher.group(1));
+                    debugInfo.addTreeNodes(Collections.singletonMap(key, id));
+                }
             }
         }
     }
