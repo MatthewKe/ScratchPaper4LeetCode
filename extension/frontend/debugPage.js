@@ -130,7 +130,7 @@ require(['vs/editor/editor.main'], function () {
             .catch(error => console.log('error', error)); //
     }
 
-    document.getElementById("Debug Button 2").onclick = () => {
+    document.getElementById("debug").onclick = () => {
         let jsonData = {
             context: context,
             breakpointsLines: [7, 8]
@@ -152,8 +152,8 @@ require(['vs/editor/editor.main'], function () {
             .catch(error => console.log('error', error));
     }
 
-    document.getElementById("Debug Button 3").onclick = () => {
-        fetch(ip + '/debugCode', requestOptions)
+    document.getElementById("step").onclick = () => {
+        fetch(ip + '/step', requestOptions)
             .then(response => response.json())
             .then(result => {
                 console.log(result)
@@ -161,4 +161,30 @@ require(['vs/editor/editor.main'], function () {
             .catch(error => console.log('error', error));
     };
 
+    document.getElementById("next").onclick = () => {
+        fetch(ip + '/next', requestOptions)
+            .then(response => response.json())
+            .then(result => {
+                console.log(result)
+            })
+            .catch(error => console.log('error', error));
+    };
+
+    document.getElementById("stepUp").onclick = () => {
+        fetch(ip + '/stepUp', requestOptions)
+            .then(response => response.json())
+            .then(result => {
+                console.log(result)
+            })
+            .catch(error => console.log('error', error));
+    };
+
+    document.getElementById("cont").onclick = () => {
+        fetch(ip + '/cont', requestOptions)
+            .then(response => response.json())
+            .then(result => {
+                console.log(result)
+            })
+            .catch(error => console.log('error', error));
+    };
 });

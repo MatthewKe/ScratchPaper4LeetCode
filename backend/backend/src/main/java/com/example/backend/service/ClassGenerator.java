@@ -11,7 +11,7 @@ public class ClassGenerator {
         writer.write(sourceCode);
         writer.close();
 
-        Process compileProcess = Runtime.getRuntime().exec("javac -g " + fileName);
+        Process compileProcess = Runtime.getRuntime().exec("javac -g " + "src/main/java/sourcecode/*.java");
         compileProcess.waitFor();
 
         if (compileProcess.exitValue() != 0) {

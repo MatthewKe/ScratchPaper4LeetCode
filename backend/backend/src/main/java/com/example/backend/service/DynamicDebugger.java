@@ -15,16 +15,10 @@ import java.io.*;
 import java.util.Map;
 
 public class DynamicDebugger {
-    private Class debugClass;
+    Process jdbProcess;
     private int[] breakPointLines;
 
-    public Class getDebugClass() {
-        return debugClass;
-    }
-
-    public void setDebugClass(Class debugClass) {
-        this.debugClass = debugClass;
-    }
+    private Thread thread;
 
     public int[] getBreakPointLines() {
         return breakPointLines;
@@ -49,29 +43,29 @@ public class DynamicDebugger {
 
     public void debug(Code code) throws IOException, InterruptedException, CompileException, IllegalConnectorArgumentsException, VMStartException {
         ClassGenerator.generate(code.getContext());
-//        debugClass= Main.class;
-        breakPointLines=new int[]{7,9};
-        VirtualMachine vm= connectAndLaunchVM();
-        enableClassPrepareRequest(vm);
-        EventSet eventSet = null;
-        while ((eventSet = vm.eventQueue().remove()) != null) {
-            for (Event event : eventSet) {
-                System.out.println(event);
-            }
+        breakPointLines=code.getBreakPoints();
+
+        jdbProcess = Runtime.getRuntime().exec("jdb -classpath src/main/java sourcecode.Main");
+        // 准备用于发送命令的 Writer
+        OutputStreamWriter outputStreamWriter = new OutputStreamWriter(jdbProcess.getOutputStream(),"GBK");
+
+        // 向 jdb 发送命令
+        outputStreamWriter.write("help\n"); // 示例命令
+        outputStreamWriter.flush();
+
+        // 准备读取 jdb 的输出
+        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(jdbProcess.getInputStream(),"GBK"));
+
+        // 读取输出
+        String line;
+        while ((line = bufferedReader.readLine()) != null) {
+            System.out.println(line);
         }
+
+        // 关闭资源
+        outputStreamWriter.close();
+        bufferedReader.close();
+        jdbProcess.waitFor();
     }
 
-    public VirtualMachine connectAndLaunchVM() throws IOException, IllegalConnectorArgumentsException, VMStartException {
-        LaunchingConnector launchingConnector = Bootstrap.virtualMachineManager().defaultConnector();
-        Map<String, Connector.Argument> arguments = launchingConnector.defaultArguments();
-        arguments.get("main").setValue(debugClass.getName());
-        VirtualMachine vm = launchingConnector.launch(arguments);
-        return vm;
-    }
-
-    public void enableClassPrepareRequest(VirtualMachine vm) {
-        ClassPrepareRequest classPrepareRequest = vm.eventRequestManager().createClassPrepareRequest();
-        classPrepareRequest.addClassFilter(debugClass.getName());
-        classPrepareRequest.enable();
-    }
 }
