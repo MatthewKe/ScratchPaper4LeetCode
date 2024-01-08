@@ -62,11 +62,6 @@
             height: 0px;
         }
 
-        #debugger {
-            background-color: green;
-            display: none;
-        }
-
         #debugButtons {
             height: 25px;
             background-color: #e0e0e0; /* 调试按钮栏背景色 */
@@ -75,22 +70,9 @@
             justify-content: center; /* 居中按钮 */
         }
 
-        #step {
+        #step, #next, #stepUp, #cont, #exit {
             display: none;
         }
-
-        #next {
-            display: none;
-        }
-
-        #stepUp {
-            display: none;
-        }
-
-        #cont {
-            display: none;
-        }
-
 
         .myGlyphMarginClass {
             background-color: red;
@@ -123,8 +105,6 @@
 <div id="dragLine"></div>
 
 <div id="output">程序运行中……</div>
-
-<div id="debugger"></div>
 
 <div id="debugButtons">
     <button id="run">运行</button>
