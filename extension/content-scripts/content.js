@@ -179,11 +179,11 @@ console.log("content.js loaded");
 window.addEventListener("message", ev => {
     if (ev.data.message === "lengthenTheArea") {
         console.log("发送成功")
-        iframe.style.height = '550px';
+        document.getElementById('debugPageIframe').style.height = '550px';
         window.parent.postMessage({message: "lengthenSucceeded"}, "*");
     } else if (ev.data.message === "shortenTheArea") {
         console.log("发送成功")
-        iframe.style.height = '400px';
+        document.getElementById('debugPageIframe').style.height = '400px';
         window.parent.postMessage({message: "shortenSucceeded"}, "*");
     }
 })
