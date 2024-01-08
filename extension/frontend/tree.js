@@ -102,7 +102,7 @@ function renderTree() {
                 })
                 .text(name)
                 .attr("text-anchor", "middle")
-                .attr("font-size", "10px");
+                .attr("font-size", "15px");
         });
 
         var link = container.selectAll(".link")
@@ -164,7 +164,7 @@ function renderTree() {
     document.getElementById("focus").onclick = focus;
 
     function focus() {
-
+        console.log("focus");
         var cx;
         var cy;
         for (let i = 0; i < treeDatas.length; i++) {
@@ -194,11 +194,11 @@ function renderTree() {
     document.getElementById("fit").onclick = fit;
 
     function fit() {
+        console.log("fit");
         let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
 
         containers.forEach(container => {
             const bbox = container.node().getBBox();
-            console.log(bbox);
             minX = Math.min(minX, bbox.x);
             minY = Math.min(minY, bbox.y);
             maxX = Math.max(maxX, bbox.x + bbox.width);
