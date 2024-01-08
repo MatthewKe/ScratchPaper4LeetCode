@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        .link {
+            fill: none;
+            stroke: #ccc;
+            stroke-width: 2px;
+            stroke-dasharray: 5, 5; /* 设置为虚线 */
+        }
+
+        .node circle {
+            stroke: steelblue;
+            stroke-width: 3px;
+        }
+
+        .node text {
+            font: 20px sans-serif;
+            text-anchor: middle; /* 文本居中 */
+        }
+    </style>
+</head>
+<body>
+<svg width="600" height="400"></svg>
+<hr>
+<button id="fit">适应边框</button>
+<button id="focus">聚焦</button>
+<script src="https://d3js.org/d3.v6.min.js"></script>
+<script src="tree.js"></script>
+</body>
+</html>
