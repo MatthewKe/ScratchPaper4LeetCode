@@ -24,6 +24,7 @@
     {
       "resources": [
         "frontend/debugPage.html",
+        "frontend/tree.html",
         "lib/min/vs/**",
         "inject-scripts/inject.js"
       ],

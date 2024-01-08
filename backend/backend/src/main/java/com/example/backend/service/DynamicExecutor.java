@@ -5,7 +5,7 @@ import java.io.*;
 public class DynamicExecutor {
     public static String execute(String sourceCode) throws IOException, CompileException, InterruptedException {
         ClassGenerator.generate(sourceCode);
-        Process runProcess = Runtime.getRuntime().exec("java -classpath src/main/java sourcecode.Main");
+        Process runProcess = Runtime.getRuntime().exec("java -cp \"src/main/java/sourcecode/*;src/main/java\" sourcecode.Main\n");
         BufferedReader outputReader = new BufferedReader(new InputStreamReader(runProcess.getInputStream(), "GBK"));
         String line;
         StringBuilder output = new StringBuilder();

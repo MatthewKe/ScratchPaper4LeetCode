@@ -1,10 +1,23 @@
 package com.example.backend.controller;
 
+import com.example.backend.service.TreeData;
+
+import java.util.List;
+
 public class Response {
     private String message;
 
+    private List<TreeData> treeDatas;
     private DebugInfo debugInfo;
     private int code;
+
+    public List<TreeData> getTreeDatas() {
+        return treeDatas;
+    }
+
+    public void setTreeDatas(List<TreeData> treeDatas) {
+        this.treeDatas = treeDatas;
+    }
 
     public String getMessage() {
         return message;

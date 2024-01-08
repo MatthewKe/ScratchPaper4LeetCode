@@ -1,5 +1,13 @@
 package sourcecode;
 import com.example.backend.service.TreeNode;
+public class Main {
+    public static void main(String[] args) {
+        Solution solution = new Solution();
+        solution.constructMaximumBinaryTree(new int[]{1, 2, 3});
+        System.out.println("hello world");
+    }
+}
+
 class Solution {
     public TreeNode constructMaximumBinaryTree(int[] nums) {
         return construct(nums, 0, nums.length - 1);
@@ -16,8 +24,8 @@ class Solution {
             }
         }
         TreeNode node = new TreeNode(nums[best]);
-        node.left = construct(nums, left, best - 1);
-        node.right = construct(nums, best + 1, right);
+        node.setLeft(construct(nums, left, best - 1));
+        node.setRight(construct(nums, best + 1, right));
         return node;
     }
 }

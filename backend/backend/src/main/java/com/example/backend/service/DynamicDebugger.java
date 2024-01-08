@@ -3,10 +3,11 @@ package com.example.backend.service;
 import com.example.backend.controller.Code;
 import com.example.backend.controller.DebugInfo;
 
-
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -46,7 +47,7 @@ public class DynamicDebugger {
             outputStreamWriter.close();
             bufferedReader.close();
         }
-        jdbProcess = Runtime.getRuntime().exec("jdb -classpath src/main/java sourcecode.Main");
+        jdbProcess = Runtime.getRuntime().exec("jdb -classpath \"src/main/java/sourcecode/*;src/main/java\" sourcecode.Main\n");
         outputStreamWriter = new OutputStreamWriter(jdbProcess.getOutputStream(), "GBK");
         bufferedReader = new BufferedReader(new InputStreamReader(jdbProcess.getInputStream(), "GBK"));
         //正在初始化jdb...
