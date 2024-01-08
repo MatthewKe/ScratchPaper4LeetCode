@@ -240,6 +240,9 @@ require(['vs/editor/editor.main'], function () {
 
 
     document.getElementById("debug").onclick = () => {
+        let outputArea = document.getElementById('output');
+        outputArea.innerText = "程序运行中……";
+
         document.getElementById("run").style.display = 'none';
         document.getElementById("debug").style.display = 'none';
 
@@ -250,7 +253,6 @@ require(['vs/editor/editor.main'], function () {
         document.getElementById("exit").style.display = 'inline';
 
         //发送消息至content.js
-        let outputArea = document.getElementById('output');
         let editArea = document.getElementById('editor');
         window.parent.postMessage({ message: "lengthenTheArea" }, "*");
 
@@ -329,8 +331,8 @@ require(['vs/editor/editor.main'], function () {
         document.getElementById("cont").style.display = 'none';
         document.getElementById("exit").style.display = 'none';
 
-        document.getElementById("output").style.display = 'none';
-        document.getElementById("dragLine").style.display = 'none';
+        document.getElementById("output").style.height = '0px';
+        document.getElementById("dragLine").style.height = '0px';
 
         window.parent.postMessage({ message: "shortenTheArea" }, "*");
         editor.layout();
