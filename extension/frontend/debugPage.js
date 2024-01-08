@@ -162,8 +162,24 @@ require(['vs/editor/editor.main'], function () {
 
     const ip = "http://localhost:8080";
 
+    let isDragging = false;
+    let dragStartY;
+    let preUp = 340;
+    let preDown = 150;
+    let newUp, newDown;
+
     document.getElementById("run").onclick = () => {
         //发送消息至content.js
+        let outputArea = document.getElementById('output');
+        let editArea = document.getElementById('editor');
+        window.parent.postMessage({ message: "lengthenTheArea"}, "*");
+
+        editArea.style.height = '340px';
+        console.log(editor);
+        editor.layout();
+        document.getElementById('dragLine').style.height = '5px';
+        document.getElementById('dragLine').style.top = '200px';
+        outputArea.style.height = '150px';
 
         console.log("sendCodeToBackend");
         let jsonData = {
@@ -189,11 +205,6 @@ require(['vs/editor/editor.main'], function () {
             .catch(error => console.log('error', error)); //
     }
 
-    let isDragging = false;
-    let dragStartY;
-    let preUp = 170;
-    let preDown = 170;
-    let newUp, newDown;
     //拖拽条
     let dragLine = document.getElementById('dragLine');
     dragLine.addEventListener('mousedown', (e) => {

@@ -108,3 +108,11 @@ chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
 });
 
 console.log("content.js loaded");
+
+window.addEventListener("message", ev => {
+    if (ev.data.message === "lengthenTheArea") {
+        console.log("发送成功")
+        iframe.style.height = '550px';
+        window.parent.postMessage({ message: "lengthenSucceeded"}, "*");
+    }
+})
