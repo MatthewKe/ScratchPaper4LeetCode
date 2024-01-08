@@ -18,7 +18,7 @@ var choosedLanguage;
 
 function triggerFetchMonacoContext() {
     if (injectInitialized && debugPageInitialized) {
-        iframe.contentWindow.postMessage({message: "debugPageInitializedWithContext"}, "*");
+        iframe.contentWindow.postMessage({ message: "debugPageInitializedWithContext" }, "*");
         //iframe.contentWindow.postMessage({message:"languageType", type:choosedLanguage}, "*");
         console.log("sendMessage debugPageInitializedWithContext");
     }
@@ -42,11 +42,11 @@ chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
     }
     console.log("popDebugger begins");
     injectScriptToAccessMonaco();
-// 针对leetcode的OJ页面选择出语言选择按钮
+    // 针对leetcode的OJ页面选择出语言选择按钮
     /*let languageButton = document.getElementsByClassName('rounded items-center whitespace-nowrap focus:outline-none inline-flex bg-transparent dark:bg-dark-transparent text-text-secondary dark:text-text-secondary active:bg-transparent dark:active:bg-dark-transparent hover:bg-fill-secondary dark:hover:bg-fill-secondary px-1.5 py-0.5 text-sm font-normal group')[0];
     console.log('语言：'+languageButton.textContent);
     choosedLanguage = languageButton.textContent;*/
-// 创建 iframe
+    // 创建 iframe
     iframe = document.createElement('iframe');
     iframe.id = 'debugPageIframe';
     iframe.style.width = '600px';
@@ -57,7 +57,7 @@ chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
     iframe.style.zIndex = '1000';
     iframe.src = chrome.runtime.getURL('frontend/debugPage.html');
     iframe.style.boxShadow = '0px 0px 10px 2px rgba(0, 0, 0, 0.5)'; // 阴影效果
-// 创建覆盖层
+    // 创建覆盖层
     let dragCover = document.createElement('div');
     dragCover.style.position = 'fixed';
     dragCover.style.top = '10px';
@@ -67,14 +67,14 @@ chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
     dragCover.style.zIndex = '1001'; // 确保比 iframe 高，以出现在前方
     dragCover.style.cursor = 'move'; // 使鼠标悬停时能够变换样式
 
-// 添加 iframe 和覆盖层到页面
+    // 添加 iframe 和覆盖层到页面
     document.body.appendChild(iframe);
     document.body.appendChild(dragCover);
 
     let isDragging = false;
     let dragStartX, dragStartY;
 
-// 鼠标按下事件绑定到覆盖层
+    // 鼠标按下事件绑定到覆盖层
     dragCover.addEventListener('mousedown', (e) => {
         // console.log("mousedown")
         e.preventDefault();
@@ -85,7 +85,7 @@ chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
         iframe.style.pointerEvents = 'none'; // 禁用 iframe 的鼠标事件
     });
 
-// 鼠标移动事件
+    // 鼠标移动事件
     document.addEventListener('mousemove', (e) => {
         // console.log("mousemove")
         if (!isDragging) return;
@@ -98,7 +98,7 @@ chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
         dragCover.style.top = (newY - 5) + 'px';
     });
 
-// 鼠标释放事件
+    // 鼠标释放事件
     document.addEventListener('mouseup', () => {
         // console.log("mouseup")
         isDragging = false;
@@ -108,3 +108,16 @@ chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
 });
 
 console.log("content.js loaded");
+
+window.addEventListener("message", ev => {
+    if (ev.data.message === "lengthenTheArea") {
+        console.log("发送成功")
+        iframe.style.height = '550px';
+        window.parent.postMessage({ message: "lengthenSucceeded" }, "*");
+    }
+    else if (ev.data.message === "shortenTheArea") {
+        console.log("发送成功")
+        iframe.style.height = '400px';
+        window.parent.postMessage({ message: "shortenSucceeded" }, "*");
+    }
+})

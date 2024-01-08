@@ -1,4 +1,4 @@
-require.config({paths: {'vs': '../lib/min/vs'}});
+require.config({ paths: { 'vs': '../lib/min/vs' } });
 require(['vs/editor/editor.main'], function () {
 
     var context = 'public class Main {\n' +
@@ -74,14 +74,14 @@ require(['vs/editor/editor.main'], function () {
             var solutionClassRegex = /class Solution \{[\s\S]*?\n\}/;
             var match = context.match(solutionClassRegex);
             var solutionClassCode = match ? match[0] : null;
-            window.parent.postMessage({message: "debugEditorChange", context: solutionClassCode}, "*");
+            window.parent.postMessage({ message: "debugEditorChange", context: solutionClassCode }, "*");
         }
     });
 
     window.addEventListener("message", ev => {
         if (ev.data.message === "debugPageInitializedWithContext") {
             console.log("debugPage.js receive message debugPageInitializedWithContext");
-            window.parent.postMessage({message: "fetchContext"}, "*");
+            window.parent.postMessage({ message: "fetchContext" }, "*");
         } else if (ev.data.message === "context") {
             console.log("debugPage.js receive message context");
             context = ev.data.context;
@@ -111,7 +111,7 @@ require(['vs/editor/editor.main'], function () {
             }
         });
     });
-    observer.observe(document.body, {childList: true, subtree: true});
+    observer.observe(document.body, { childList: true, subtree: true });
 
 
     var decorations = [];
@@ -138,7 +138,7 @@ require(['vs/editor/editor.main'], function () {
         breakpointsLines.forEach(i => {
             var newDecoration = {
                 range: new monaco.Range(i, 1, i, 1),
-                options: {isWholeLine: true, glyphMarginClassName: 'myGlyphMarginClass'}
+                options: { isWholeLine: true, glyphMarginClassName: 'myGlyphMarginClass' }
             };
             newDecorations.push(newDecoration);
         })
@@ -156,22 +156,30 @@ require(['vs/editor/editor.main'], function () {
     }
 
 
-    window.parent.postMessage({message: "debugPageInitialized"}, "*");
+    window.parent.postMessage({ message: "debugPageInitialized" }, "*");
 
     console.log("Monaco Editor initialized");
 
     const ip = "http://localhost:8080";
 
+    let isDragging = false;
+    let dragStartY;
+    let preUp = 340;
+    let preDown = 150;
+    let newUp, newDown;
+
     document.getElementById("run").onclick = () => {
-        //显示输出区
+        //发送消息至content.js
         let outputArea = document.getElementById('output');
         let editArea = document.getElementById('editor');
-        editArea.style.height = '170px';
+        window.parent.postMessage({ message: "lengthenTheArea" }, "*");
+
+        editArea.style.height = '340px';
         console.log(editor);
         editor.layout();
         document.getElementById('dragLine').style.height = '5px';
         document.getElementById('dragLine').style.top = '200px';
-        outputArea.style.height = '170px';
+        outputArea.style.height = '150px';
 
         console.log("sendCodeToBackend");
         let jsonData = {
@@ -197,84 +205,83 @@ require(['vs/editor/editor.main'], function () {
             .catch(error => console.log('error', error)); //
     }
 
+    //拖拽条
+    let dragLine = document.getElementById('dragLine');
+    dragLine.addEventListener('mousedown', (e) => {
+        e.preventDefault();
+        isDragging = true;
+        dragStartY = e.clientY;
+        console.log(newUp)
+        console.log(newDown)
+        if (newUp != undefined && newDown != undefined) {
+            console.log("有效")
+            preUp = newUp
+            preDown = newDown
+        }
+    });
+    document.addEventListener('mousemove', (e) => {
+        if (!isDragging) return;
+        e.preventDefault();
+
+        let length = e.clientY - dragStartY;
+
+        let outputArea = document.getElementById('output');
+        let editArea = document.getElementById('editor');
+        newUp = (preUp + length);
+        newDown = (preDown - length);
+
+        editArea.style.height = newUp + 'px';
+        editor.layout();
+        outputArea.style.height = newDown + 'px';
+    });
+    document.addEventListener('mouseup', () => {
+        isDragging = false;
+    });
+
 
     document.getElementById("debug").onclick = () => {
-        let isDragging = false;
-        let dragStartY;
-        let preUp = 170;
-        let preDown = 170;
-        let newUp, newDown;
-        //拖拽条
-        let dragLine = document.getElementById('dragLine');
-        dragLine.addEventListener('mousedown', (e) => {
-            e.preventDefault();
-            // console.log("mousedown")
-            isDragging = true;
-            dragStartY = e.clientY;
-            console.log(newUp)
-            console.log(newDown)
-            if (newUp != undefined && newDown != undefined) {
-                console.log("有效")
-                preUp = newUp
-                preDown = newDown
-            }
-        });
-        document.addEventListener('mousemove', (e) => {
-            // console.log("mousemove")
-            if (!isDragging) return;
-            e.preventDefault();
+        let outputArea = document.getElementById('output');
+        outputArea.innerText = "程序运行中……";
 
-            let length = e.clientY - dragStartY;
+        document.getElementById("run").style.display = 'none';
+        document.getElementById("debug").style.display = 'none';
 
-            let outputArea = document.getElementById('output');
-            let editArea = document.getElementById('editor');
-            newUp = (preUp + length);
-            newDown = (preDown - length);
+        document.getElementById("step").style.display = 'inline';
+        document.getElementById("next").style.display = 'inline';
+        document.getElementById("stepUp").style.display = 'inline';
+        document.getElementById("cont").style.display = 'inline';
+        document.getElementById("exit").style.display = 'inline';
 
-            editArea.style.height = newUp + 'px';
-            editor.layout();
-            outputArea.style.height = newDown + 'px';
-        });
-        document.addEventListener('mouseup', () => {
-            // console.log("mouseup")
-            console.log(newUp)
-            console.log(newDown)
-            //preUp = newUp
-            //preDown = newDown
-            isDragging = false;
-            console.log("停止拖拽")
+        //发送消息至content.js
+        let editArea = document.getElementById('editor');
+        window.parent.postMessage({ message: "lengthenTheArea" }, "*");
 
-        });
+        editArea.style.height = '340px';
+        console.log(editor);
+        editor.layout();
+        document.getElementById('dragLine').style.height = '5px';
+        document.getElementById('dragLine').style.top = '200px';
+        outputArea.style.height = '150px';
 
-        var debugButton = document.getElementById("debug");
-        debugButton.onclick = debugCode;
+        let jsonData = {
+            context: context,
+            breakpointsLines: breakpointsLines
+        };
 
-        function debugCode() {
-            document.getElementById("step").style.display = 'inline';
-            document.getElementById("next").style.display = 'inline';
-            document.getElementById("stepUp").style.display = 'inline';
-            document.getElementById("cont").style.display = 'inline';
-
-            let jsonData = {
-                context: context,
-                breakpointsLines: breakpointsLines
-            };
-
-            let requestOptions = {
-                method: 'POST', // 请求方法
-                headers: {
-                    'Content-Type': 'application/json' // 指定内容类型为 JSON
-                },
-                body: JSON.stringify(jsonData), // 将 JSON 对象转换为字符串
-                redirect: 'follow' // 自动重定向
-            };
-            fetch(ip + '/debugCode', requestOptions)
-                .then(response => response.json())
-                .then(result => {
-                    debugStep(result);
-                })
-                .catch(error => console.log('error', error));
-        }
+        let requestOptions = {
+            method: 'POST', // 请求方法
+            headers: {
+                'Content-Type': 'application/json' // 指定内容类型为 JSON
+            },
+            body: JSON.stringify(jsonData), // 将 JSON 对象转换为字符串
+            redirect: 'follow' // 自动重定向
+        };
+        fetch(ip + '/debugCode', requestOptions)
+            .then(response => response.json())
+            .then(result => {
+                debugStep(result);
+            })
+            .catch(error => console.log('error', error));
     }
 
     document.getElementById("step").onclick = () => {
@@ -315,19 +322,48 @@ require(['vs/editor/editor.main'], function () {
     };
 
     document.getElementById("exit").onclick = () => {
+        document.getElementById("run").style.display = 'inline';
+        document.getElementById("debug").style.display = 'inline';
+
+        document.getElementById("step").style.display = 'none';
+        document.getElementById("next").style.display = 'none';
+        document.getElementById("stepUp").style.display = 'none';
+        document.getElementById("cont").style.display = 'none';
+        document.getElementById("exit").style.display = 'none';
+
+        document.getElementById("output").style.height = '0px';
+        document.getElementById("dragLine").style.height = '0px';
+
+        window.parent.postMessage({ message: "shortenTheArea" }, "*");
+        editor.layout();
+
         fetch(ip + '/exit')
             .then(response => response.json())
             .then(result => {
-                debugStep(result);
+                console.log(result);
+                lineToHighlight = result.debugInfo.currentLine;
+                decorateEditor();
             })
             .catch(error => console.log('error', error));
     };
 
     function debugStep(result) {
         console.log(result);
+        let outputArea = document.getElementById('output');
+        let content = "";
+        if (result.debugInfo.message != null) {
+            content = result.debugInfo.message.substring(2);
+        }
+        if (result.debugInfo.variables != null) {
+            console.log(result.debugInfo.variables[0])
+            for (i = 0; i < result.debugInfo.variables.length; i++) {
+                console.log(result.debugInfo.variables[i])
+                content = content + '\n' + JSON.stringify(result.debugInfo.variables[i])
+            }
+        }
+        outputArea.innerText = content
+        //这里要写应用程序已退出的内容
         lineToHighlight = result.debugInfo.currentLine;
         decorateEditor();
     }
-
-
 })
