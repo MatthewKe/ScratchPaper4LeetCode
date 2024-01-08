@@ -172,7 +172,7 @@ require(['vs/editor/editor.main'], function () {
         //发送消息至content.js
         let outputArea = document.getElementById('output');
         let editArea = document.getElementById('editor');
-        window.parent.postMessage({ message: "lengthenTheArea"}, "*");
+        window.parent.postMessage({ message: "lengthenTheArea" }, "*");
 
         editArea.style.height = '340px';
         console.log(editor);
@@ -240,32 +240,46 @@ require(['vs/editor/editor.main'], function () {
 
 
     document.getElementById("debug").onclick = () => {
-            document.getElementById("run").style.display = 'none';
-            document.getElementById("debug").style.display = 'none';
-            document.getElementById("step").style.display = 'inline';
-            document.getElementById("next").style.display = 'inline';
-            document.getElementById("stepUp").style.display = 'inline';
-            document.getElementById("cont").style.display = 'inline';
+        document.getElementById("run").style.display = 'none';
+        document.getElementById("debug").style.display = 'none';
 
-            let jsonData = {
-                context: context,
-                breakpointsLines: breakpointsLines
-            };
+        document.getElementById("step").style.display = 'inline';
+        document.getElementById("next").style.display = 'inline';
+        document.getElementById("stepUp").style.display = 'inline';
+        document.getElementById("cont").style.display = 'inline';
+        document.getElementById("exit").style.display = 'inline';
 
-            let requestOptions = {
-                method: 'POST', // 请求方法
-                headers: {
-                    'Content-Type': 'application/json' // 指定内容类型为 JSON
-                },
-                body: JSON.stringify(jsonData), // 将 JSON 对象转换为字符串
-                redirect: 'follow' // 自动重定向
-            };
-            fetch(ip + '/debugCode', requestOptions)
-                .then(response => response.json())
-                .then(result => {
-                    debugStep(result);
-                })
-                .catch(error => console.log('error', error));
+        //发送消息至content.js
+        let outputArea = document.getElementById('output');
+        let editArea = document.getElementById('editor');
+        window.parent.postMessage({ message: "lengthenTheArea" }, "*");
+
+        editArea.style.height = '340px';
+        console.log(editor);
+        editor.layout();
+        document.getElementById('dragLine').style.height = '5px';
+        document.getElementById('dragLine').style.top = '200px';
+        outputArea.style.height = '150px';
+
+        let jsonData = {
+            context: context,
+            breakpointsLines: breakpointsLines
+        };
+
+        let requestOptions = {
+            method: 'POST', // 请求方法
+            headers: {
+                'Content-Type': 'application/json' // 指定内容类型为 JSON
+            },
+            body: JSON.stringify(jsonData), // 将 JSON 对象转换为字符串
+            redirect: 'follow' // 自动重定向
+        };
+        fetch(ip + '/debugCode', requestOptions)
+            .then(response => response.json())
+            .then(result => {
+                debugStep(result);
+            })
+            .catch(error => console.log('error', error));
     }
 
     document.getElementById("step").onclick = () => {
@@ -306,19 +320,48 @@ require(['vs/editor/editor.main'], function () {
     };
 
     document.getElementById("exit").onclick = () => {
+        document.getElementById("run").style.display = 'inline';
+        document.getElementById("debug").style.display = 'inline';
+
+        document.getElementById("step").style.display = 'none';
+        document.getElementById("next").style.display = 'none';
+        document.getElementById("stepUp").style.display = 'none';
+        document.getElementById("cont").style.display = 'none';
+        document.getElementById("exit").style.display = 'none';
+
+        document.getElementById("output").style.display = 'none';
+        document.getElementById("dragLine").style.display = 'none';
+
+        window.parent.postMessage({ message: "shortenTheArea" }, "*");
+        editor.layout();
+
         fetch(ip + '/exit')
             .then(response => response.json())
             .then(result => {
-                debugStep(result);
+                console.log(result);
+                lineToHighlight = result.debugInfo.currentLine;
+                decorateEditor();
             })
             .catch(error => console.log('error', error));
     };
 
     function debugStep(result) {
         console.log(result);
+        let outputArea = document.getElementById('output');
+        let content = "";
+        if (result.debugInfo.message != null) {
+            content = result.debugInfo.message.substring(2);
+        }
+        if (result.debugInfo.variables != null) {
+            console.log(result.debugInfo.variables[0])
+            for (i = 0; i < result.debugInfo.variables.length; i++) {
+                console.log(result.debugInfo.variables[i])
+                content = content + '\n' + JSON.stringify(result.debugInfo.variables[i])
+            }
+        }
+        outputArea.innerText = content
+        //这里要写应用程序已退出的内容
         lineToHighlight = result.debugInfo.currentLine;
         decorateEditor();
     }
-
-
 })
