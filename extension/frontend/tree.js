@@ -43,7 +43,64 @@ var treeDatas = [
                 flag: 1,
             }
         ]
-    }
+    },
+    {
+        value: "1",
+        id: 1,
+        flag: 0,
+        children: [
+            {
+                value: "2",
+                id: 2,
+                flag: 0,
+                children: [
+                    {
+                        value: "3",
+                        id: 3,
+                        flag: 0,
+                    },
+                    {
+                        value: "4",
+                        id: 4,
+                        flag: 0,
+                    }
+                ]
+            },
+            {
+                value: "5",
+                id: 5,
+                flag: 0,
+            }
+        ]
+    }, {
+        value: "1",
+        id: 1,
+        flag: 0,
+        children: [
+            {
+                value: "2",
+                id: 2,
+                flag: 0,
+                children: [
+                    {
+                        value: "3",
+                        id: 3,
+                        flag: 0,
+                    },
+                    {
+                        value: "4",
+                        id: 4,
+                        flag: 0,
+                    }
+                ]
+            },
+            {
+                value: "5",
+                id: 5,
+                flag: 0,
+            }
+        ]
+    },
 ];
 var targetTreeNodes = [{id: 1, name: "leftNode"}, {id: 2, name: "curNode"}];
 
@@ -210,30 +267,28 @@ function fit() {
     let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
 
     containers.forEach(container => {
-        // 假设每个容器有 x, y, width, height 属性
         const bbox = container.node().getBBox();
+        console.log(bbox);
         minX = Math.min(minX, bbox.x);
         minY = Math.min(minY, bbox.y);
         maxX = Math.max(maxX, bbox.x + bbox.width);
         maxY = Math.max(maxY, bbox.y + bbox.height);
     });
-
-    const width = maxX - minX;
+    
     const height = maxY - minY;
+    const width = preContainerWidth[preContainerWidth.length - 1];
     const svgWidth = svg.node().clientWidth;
     const svgHeight = svg.node().clientHeight;
 
-    // 计算缩放比例
     const scaleX = svgWidth / width;
     const scaleY = svgHeight / height;
     const scale = Math.min(scaleX, scaleY);
 
-    // 计算平移量
     const translateX = -minX * scale;
     const translateY = -minY * scale;
 
-    // 应用变换
     svg.transition()
         .duration(750)
-        .call(zoom.transform, d3.zoomIdentity.translate(translateX, translateY - 40).scale(scale * 0.9));
+        .call(zoom.transform, d3.zoomIdentity.translate(translateX, translateY).scale(scale));
+
 }
