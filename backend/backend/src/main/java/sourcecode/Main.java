@@ -3,7 +3,7 @@ import com.example.backend.service.TreeNode;
 public class Main {
     public static void main(String[] args) {
         Solution solution = new Solution();
-        solution.constructMaximumBinaryTree(new int[]{1, 2, 3});
+        solution.constructMaximumBinaryTree(new int[]{3,2,1,6,0,5});
         System.out.println("hello world");
     }
 }

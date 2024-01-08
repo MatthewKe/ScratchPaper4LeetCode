@@ -3,10 +3,7 @@ package com.example.backend.service;
 import com.example.backend.controller.Code;
 import com.example.backend.controller.DebugInfo;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
+import java.io.*;
 import java.util.Collections;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -40,6 +37,14 @@ public class DynamicDebugger {
     }
 
     public DebugInfo debug(Code code) throws IOException, InterruptedException, CompileException {
+        String filePath = "src/main/java/com/example/backend/service/treeDatas.json";
+        try (FileWriter file = new FileWriter(filePath)) {
+            file.write("");
+            file.flush();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
         ClassGenerator.generate(code.getContext());
         breakPointLines = code.getBreakpointsLines();
         if (jdbProcess != null) {
@@ -118,11 +123,14 @@ public class DynamicDebugger {
             //    right: null
             //}
             output = jdbReader();
-            pattern = Pattern.compile("idCounter:\\ (\\d+)");
+            pattern = Pattern.compile("id:\\ (\\d+)");
             matcher = pattern.matcher(output);
             if (matcher.find()) {
                 int id = Integer.parseInt(matcher.group(1));
-                debugInfo.addTreeNodes(Collections.singletonMap(key, id));
+                TargetTreeNode targetTreeNode = new TargetTreeNode();
+                targetTreeNode.setName(key);
+                targetTreeNode.setId(id);
+                debugInfo.addTargetTreeNode(targetTreeNode);
             }
         }
     }

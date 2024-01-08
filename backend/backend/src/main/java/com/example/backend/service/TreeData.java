@@ -8,6 +8,16 @@ public class TreeData {
     int flag;
     List<TreeData> children;
 
+    int stub = 0;
+
+    public int getStub() {
+        return stub;
+    }
+
+    public void setStub(int stub) {
+        this.stub = stub;
+    }
+
     public String getValue() {
         return value;
     }

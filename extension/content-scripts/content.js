@@ -115,7 +115,7 @@ window.addEventListener("message", ev => {
     iframe2 = document.createElement('iframe');
     iframe2.id = 'treeHtml';
     iframe2.style.width = '620px';
-    iframe2.style.height = '400px';
+    iframe2.style.height = '500px';
     iframe2.style.position = 'fixed';
     iframe2.style.top = '40px';
     iframe2.style.left = '500px';
@@ -190,6 +190,10 @@ window.addEventListener("message", ev => {
 
 window.addEventListener("message", function (event) {
     if (event.data && event.data.message === "treeDatas") {
-        iframe2.contentWindow.postMessage({message: "treeDatas", context: event.data.context}, "*");
+        iframe2.contentWindow.postMessage({
+            message: "treeDatas",
+            context: event.data.context,
+            targetTreeNodes: event.data.targetTreeNodes
+        }, "*");
     }
 });

@@ -353,7 +353,11 @@ require(['vs/editor/editor.main'], function () {
     function debugStep(result) {
         console.log(result);
 
-        window.parent.postMessage({message: "treeDatas", context: result.treeDatas}, "*");
+        window.parent.postMessage({
+            message: "treeDatas",
+            context: result.treeDatas,
+            targetTreeNodes: result.debugInfo.targetTreeNodes
+        }, "*");
 
         let outputArea = document.getElementById('output');
         let content = "";

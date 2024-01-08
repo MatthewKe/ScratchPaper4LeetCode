@@ -1,5 +1,6 @@
 package com.example.backend.service;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -85,6 +86,7 @@ public class TreeNode {
             }
         }
         ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
         String json = null;
         try {
             json = objectMapper.writeValueAsString(treeDatas);
@@ -111,7 +113,14 @@ public class TreeNode {
         treeData.setFlag(treeNode.flag);
         TreeData leftChild = generateTreeData(treeNode.left);
         TreeData rightChild = generateTreeData(treeNode.right);
-        List<TreeData> children = Arrays.asList(leftChild, rightChild);
+        List<TreeData> children = new ArrayList<>();
+        TreeData stubTreeNode = new TreeData();
+        stubTreeNode.setFlag(0);
+        stubTreeNode.setId(-1);
+        stubTreeNode.setValue("stub");
+        stubTreeNode.setStub(1);
+        children.add(leftChild != null ? leftChild : stubTreeNode);
+        children.add(rightChild != null ? rightChild : stubTreeNode);
         treeData.setChildren(children);
         return treeData;
     }

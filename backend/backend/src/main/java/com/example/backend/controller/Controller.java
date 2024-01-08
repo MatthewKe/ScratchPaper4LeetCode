@@ -106,6 +106,7 @@ public class Controller {
                         .setCode(500);
             }
         }
+        response.setTreeDatas(readTreeDatas());
         System.out.println(response);
         return response;
     }
@@ -128,6 +129,7 @@ public class Controller {
                         .setCode(500);
             }
         }
+        response.setTreeDatas(readTreeDatas());
         System.out.println(response);
         return response;
     }
@@ -150,6 +152,7 @@ public class Controller {
                         .setCode(500);
             }
         }
+        response.setTreeDatas(readTreeDatas());
         System.out.println(response);
         return response;
     }
@@ -172,6 +175,7 @@ public class Controller {
                         .setCode(500);
             }
         }
+        response.setTreeDatas(readTreeDatas());
         System.out.println(response);
         return response;
     }
