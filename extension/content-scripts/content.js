@@ -107,20 +107,21 @@ chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
     });
 });
 
+var iframe2;
 window.addEventListener("message", ev => {
     if (ev.data.message != "initTreeHtml") {
         return
     }
-    iframe = document.createElement('iframe');
-    iframe.id = 'treeHtml';
-    iframe.style.width = '620px';
-    iframe.style.height = '400px';
-    iframe.style.position = 'fixed';
-    iframe.style.top = '40px';
-    iframe.style.left = '500px';
-    iframe.style.zIndex = '1000';
-    iframe.src = chrome.runtime.getURL('frontend/tree.html');
-    iframe.style.boxShadow = '0px 0px 10px 2px rgba(0, 0, 0, 0.5)'; // 阴影效果
+    iframe2 = document.createElement('iframe');
+    iframe2.id = 'treeHtml';
+    iframe2.style.width = '620px';
+    iframe2.style.height = '400px';
+    iframe2.style.position = 'fixed';
+    iframe2.style.top = '40px';
+    iframe2.style.left = '500px';
+    iframe2.style.zIndex = '1000';
+    iframe2.src = chrome.runtime.getURL('frontend/tree.html');
+    iframe2.style.boxShadow = '0px 0px 10px 2px rgba(0, 0, 0, 0.5)'; // 阴影效果
     // 创建覆盖层
     let dragCover = document.createElement('div');
     dragCover.id = 'treeHtmlDragCover';
@@ -133,7 +134,7 @@ window.addEventListener("message", ev => {
     dragCover.style.cursor = 'move'; // 使鼠标悬停时能够变换样式
 
     // 添加 iframe 和覆盖层到页面
-    document.body.appendChild(iframe);
+    document.body.appendChild(iframe2);
     document.body.appendChild(dragCover);
 
     let isDragging = false;
@@ -144,10 +145,10 @@ window.addEventListener("message", ev => {
         // console.log("mousedown")
         e.preventDefault();
         isDragging = true;
-        dragStartX = e.clientX - parseInt(iframe.style.left, 10);
-        dragStartY = e.clientY - parseInt(iframe.style.top, 10);
+        dragStartX = e.clientX - parseInt(iframe2.style.left, 10);
+        dragStartY = e.clientY - parseInt(iframe2.style.top, 10);
         dragCover.style.cursor = 'move'; // 改变鼠标指针样式
-        iframe.style.pointerEvents = 'none'; // 禁用 iframe 的鼠标事件
+        iframe2.style.pointerEvents = 'none'; // 禁用 iframe 的鼠标事件
     });
 
     // 鼠标移动事件
@@ -157,8 +158,8 @@ window.addEventListener("message", ev => {
         e.preventDefault();
         let newX = e.clientX - dragStartX;
         let newY = e.clientY - dragStartY;
-        iframe.style.left = newX + 'px';
-        iframe.style.top = newY + 'px';
+        iframe2.style.left = newX + 'px';
+        iframe2.style.top = newY + 'px';
         dragCover.style.left = (newX - 5) + 'px';
         dragCover.style.top = (newY - 5) + 'px';
     });
@@ -168,7 +169,7 @@ window.addEventListener("message", ev => {
         // console.log("mouseup")
         isDragging = false;
         dragCover.style.cursor = 'default'; // 恢复鼠标指针样式
-        iframe.style.pointerEvents = 'auto'; // 恢复 iframe 的鼠标事件
+        iframe2.style.pointerEvents = 'auto'; // 恢复 iframe 的鼠标事件
     });
 })
 
@@ -186,3 +187,9 @@ window.addEventListener("message", ev => {
         window.parent.postMessage({message: "shortenSucceeded"}, "*");
     }
 })
+
+window.addEventListener("message", function (event) {
+    if (event.data && event.data.message === "treeDatas") {
+        iframe2.contentWindow.postMessage({message: "treeDatas", context: event.data.context}, "*");
+    }
+});

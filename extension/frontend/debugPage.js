@@ -151,7 +151,7 @@ require(['vs/editor/editor.main'], function () {
                 }
             });
         }
-        console.log(newDecorations);
+
         decorations = editor.deltaDecorations(decorations, newDecorations);
     }
 
@@ -352,6 +352,9 @@ require(['vs/editor/editor.main'], function () {
 
     function debugStep(result) {
         console.log(result);
+
+        window.parent.postMessage({message: "treeDatas", context: result.treeDatas}, "*");
+
         let outputArea = document.getElementById('output');
         let content = "";
         if (result.debugInfo.message != null) {
