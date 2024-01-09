@@ -78,6 +78,14 @@ require(['vs/editor/editor.main'], function () {
         }
     });
 
+    let comments = 'public class Main {\n' +
+    '    public static void main(String[] args) {\n' +
+    '        // please enter your test code here\n' +
+    '        System.out.println("hello world");\n' +
+    '    }\n' +
+    '}\n' +
+    '\n'
+
     window.addEventListener("message", ev => {
         if (ev.data.message === "debugPageInitializedWithContext") {
             console.log("debugPage.js receive message debugPageInitializedWithContext");
@@ -85,13 +93,13 @@ require(['vs/editor/editor.main'], function () {
         } else if (ev.data.message === "context") {
             console.log("debugPage.js receive message context");
             context = ev.data.context;
-            editor.setValue(context);
+            editor.setValue(comments + context);
         } else if (ev.data.message === "leetcodeEditorChange") {
             isProgrammaticChange = true;
             var originalCode = editor.getValue();
             var newSolutionCode = ev.data.context;
             var replacedCode = originalCode.replace(/class Solution \{[\s\S]*?\n\}/, newSolutionCode);
-            editor.setValue(replacedCode);
+            editor.setValue(comments + replacedCode);
         }
         if (ev.data.message === "languageType") {
             console.log("已传送");
