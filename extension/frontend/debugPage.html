@@ -53,13 +53,15 @@
 
         #dragLine {
             height: 0px;
-            background-color: rgb(140, 140, 140);
+            background-color: rgb(188, 188, 188);
             cursor: s-resize;
         }
 
         #output {
-            background-color: yellow;
+            background-color: rgb(255, 251, 211);
             height: 0px;
+            padding: 0 5px 0 5px;
+            font-size: small;
         }
 
         #debugButtons {
@@ -68,6 +70,7 @@
             padding: 5px;
             display: flex; /* 水平排列按钮 */
             justify-content: center; /* 居中按钮 */
+            align-items: center; /* 竖直居中 */
         }
 
         #step, #next, #stepUp, #cont, #exit {
@@ -89,6 +92,12 @@
         .gutter-pointer {
             cursor: pointer;
         }
+
+        button {
+            display: flex;
+            align-items: center;
+            margin: 2px 5px 2px 5px
+        }
     </style>
     <!-- 引入 Monaco Editor 的 loader 脚本 -->
     <script src="../lib/min/vs/loader.js"></script>
@@ -107,21 +116,22 @@
 <div id="output">程序运行中……</div>
 
 <div id="debugButtons">
-    <button id="run">运行</button>
+    <button id="run">
+        <svg t="1704786925071" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="6647" width="17" height="17"><path d="M512 1024c-282.304 0-512-229.696-512-512s229.696-512 512-512 512 229.696 512 512S794.304 1024 512 1024zM512 48.768C256.576 48.768 48.768 256.576 48.768 512S256.576 975.168 512 975.168 975.168 767.424 975.168 512 767.424 48.768 512 48.768z" fill="#1ac526" p-id="6648"></path><path d="M806.336 478.912c0 0-423.36-238.976-427.328-239.616C339.52 232.64 328.256 261.632 327.04 289.536L326.016 290.368c0 0 2.496 465.216 3.904 468.928 11.648 31.296 45.76 31.296 70.144 17.664l0.64 0.256c0 0 392.64-226.944 395.84-229.504C817.344 530.624 836.48 505.664 806.336 478.912z" fill="#1ac526" p-id="6649"></path></svg>
+        运行
+    </button>
     <button id="debug">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="1em" height="1em" fill="currentColor"
-             class="text-text-secondary dark:text-text-secondary w-4 h-4">
-            <path fill-rule="evenodd"
-                  d="M12 4a2 2 0 00-2 2h4a2 2 0 00-2-2zm3.924 2.384A.997.997 0 0016 6a4 4 0 00-8 0c0 .136.027.265.076.384a5.015 5.015 0 00-1.97 1.48A3.002 3.002 0 014 5a1 1 0 00-2 0 5.001 5.001 0 003.182 4.659A5.005 5.005 0 005 11v1H3a1 1 0 100 2h2v1c0 .425.038.84.11 1.244A5 5 0 002 20.874a1 1 0 102 0c0-1.208.715-2.251 1.746-2.726A7 7 0 0012 22a7 7 0 006.254-3.852A3.002 3.002 0 0120 20.874a1 1 0 102 0 5 5 0 00-3.11-4.63c.072-.404.11-.82.11-1.244v-1h2a1 1 0 100-2h-2v-1c0-.465-.063-.914-.182-1.341A5.001 5.001 0 0022 5a1 1 0 10-2 0 3.002 3.002 0 01-2.105 2.865 5.015 5.015 0 00-1.971-1.481zM17 11a3 3 0 00-3-3h-1v11.9a5.002 5.002 0 004-4.9v-4zm-6 8.9V8h-1a3 3 0 00-3 3v4a5.002 5.002 0 004 4.9z"
-                  clip-rule="evenodd"></path>
-        </svg>
+        <svg t="1704786961895" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="7870" width="17" height="17"><path d="M489.23 81.63A160 160 0 0 0 352 240v21.34h320V240A160 160 0 0 0 489.23 81.63z m383.76 143.64a32.004 32.004 0 0 0-31.1 7.56L750.62 320H273.38l-91.3-87.14a31.984 31.984 0 1 0-44.16 46.28l86.08 82.2v177.35H96a32 32 0 0 0 0 64h128V640c0 52.96 14.302 102.596 39.23 145.22L137.92 904.86a32.005 32.005 0 1 0 44.19 46.31L301.82 836.9a287.104 287.104 0 0 0 178.21 89.34V544a32 32 0 0 1 64 0v382.24a287.424 287.424 0 0 0 178.21-89.34l119.71 114.27a32.032 32.032 0 0 0 44.19-46.31L760.8 785.22A287.04 287.04 0 0 0 800 640v-37.34h128a32 32 0 0 0 0-64H800V361.31l86.08-82.17a32.004 32.004 0 0 0-13.09-53.87z" p-id="7871" fill="#1ac526"></path></svg>
         调试
     </button>
     <button id="step">逐语句调试</button>
     <button id="next">逐过程调试</button>
     <button id="stepUp">跳出</button>
     <button id="cont">继续执行</button>
-    <button id="exit">停止执行</button>
+    <button id="exit">
+        <svg t="1704786830374" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="5395" width="17" height="17"><path d="M512 512m-512 0a512 512 0 1 0 1024 0 512 512 0 1 0-1024 0Z" fill="#D75A4A" p-id="5396"></path><path d="M282.482759 282.482759h459.034482v459.034482H282.482759z" fill="#FFFFFF" p-id="5397"></path><path d="M759.172414 759.172414H264.827586V264.827586h494.344828v494.344828z m-459.034483-35.310345h423.724138V300.137931H300.137931v423.724138z" fill="#FFFFFF" p-id="5398"></path></svg>
+        终止
+    </button>
 </div>
 </body>
 </html>

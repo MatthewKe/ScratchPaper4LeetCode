@@ -8,7 +8,7 @@
         #dragBar {
             display: flex;
             text-align: left;
-            justify-content: space-between; /* 右对齐关闭按钮 */
+            justify-content: flex-end; /* 右对齐关闭按钮 */
             background-color: #f0f0f0; /* 拖拽栏背景色 */
             padding: 0px;
             height: 30px; /* 增加高度与覆盖层匹配 */
@@ -23,6 +23,11 @@
             font-size: 16px; /* 字体大小 */
             padding: 5px 10px; /* 内边距 */
             transition: background-color 0.3s, color 0.3s; /* 过渡效果 */
+        }
+
+        #closeButton:hover {
+            background-color: red; /* 鼠标悬停时的背景色 */
+            color: white;
         }
 
         .link {
