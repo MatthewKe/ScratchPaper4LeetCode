@@ -93,6 +93,7 @@ require(['vs/editor/editor.main'], function () {
         } else if (ev.data.message === "context") {
             console.log("debugPage.js receive message context");
             context = ev.data.context;
+            context=comments+context;
             editor.setValue(context);
         } else if (ev.data.message === "leetcodeEditorChange") {
             isProgrammaticChange = true;
@@ -296,6 +297,7 @@ require(['vs/editor/editor.main'], function () {
     }
 
     document.getElementById("step").onclick = () => {
+        document.getElementById("step").disabled = 'true';
         document.getElementById("next").disabled = 'true';
         document.getElementById("stepUp").disabled = 'true';
         document.getElementById("cont").disabled = 'true';
@@ -304,6 +306,7 @@ require(['vs/editor/editor.main'], function () {
             .then(response => response.json())
             .then(result => {
                 debugStep(result);
+                document.getElementById("step").removeAttribute("disabled")
                 document.getElementById("next").removeAttribute("disabled")
                 document.getElementById("stepUp").removeAttribute("disabled")
                 document.getElementById("cont").removeAttribute("disabled")
@@ -313,6 +316,7 @@ require(['vs/editor/editor.main'], function () {
 
     document.getElementById("next").onclick = () => {
         document.getElementById("step").disabled = 'true';
+        document.getElementById("next").disabled = 'true';
         document.getElementById("stepUp").disabled = 'true';
         document.getElementById("cont").disabled = 'true';
         fetch(ip + '/next')
@@ -320,6 +324,7 @@ require(['vs/editor/editor.main'], function () {
             .then(result => {
                 debugStep(result);
                 document.getElementById("step").removeAttribute("disabled")
+                document.getElementById("next").removeAttribute("disabled")
                 document.getElementById("stepUp").removeAttribute("disabled")
                 document.getElementById("cont").removeAttribute("disabled")
             })
@@ -329,6 +334,7 @@ require(['vs/editor/editor.main'], function () {
     document.getElementById("stepUp").onclick = () => {
         document.getElementById("step").disabled = 'true';
         document.getElementById("next").disabled = 'true';
+        document.getElementById("stepUp").disabled = 'true';
         document.getElementById("cont").disabled = 'true';
         fetch(ip + '/stepUp')
             .then(response => response.json())
@@ -336,6 +342,7 @@ require(['vs/editor/editor.main'], function () {
                 debugStep(result);
                 document.getElementById("step").removeAttribute("disabled")
                 document.getElementById("next").removeAttribute("disabled")
+                document.getElementById("stepUp").removeAttribute("disabled")
                 document.getElementById("cont").removeAttribute("disabled")
             })
             .catch(error => console.log('error', error));
@@ -345,6 +352,7 @@ require(['vs/editor/editor.main'], function () {
         document.getElementById("step").disabled = 'true';
         document.getElementById("next").disabled = 'true';
         document.getElementById("stepUp").disabled = 'true';
+        document.getElementById("cont").disabled = 'true';
         fetch(ip + '/cont')
             .then(response => response.json())
             .then(result => {
@@ -352,6 +360,7 @@ require(['vs/editor/editor.main'], function () {
                 document.getElementById("step").removeAttribute("disabled")
                 document.getElementById("next").removeAttribute("disabled")
                 document.getElementById("stepUp").removeAttribute("disabled")
+                document.getElementById("cont").removeAttribute("disabled")
             })
             .catch(error => console.log('error', error));
     };
