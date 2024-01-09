@@ -376,4 +376,8 @@ require(['vs/editor/editor.main'], function () {
         lineToHighlight = result.debugInfo.currentLine;
         decorateEditor();
     }
+
+    document.getElementById("closeButton1").onclick = () => {
+        window.parent.postMessage({message: "closeIframe1"}, "*");
+    };
 })

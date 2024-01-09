@@ -225,3 +225,7 @@ function renderTree() {
 
     fit();
 }
+
+document.getElementById("closeButton2").onclick = () => {
+    window.parent.postMessage({message: "closeIframe2"}, "*");
+};

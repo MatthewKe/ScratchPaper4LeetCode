@@ -190,6 +190,11 @@ window.addEventListener("message", ev => {
         console.log("发送成功")
         document.getElementById('debugPageIframe').style.height = '406px';
         window.parent.postMessage({ message: "shortenSucceeded" }, "*");
+    } else if (ev.data.message === "closeIframe1") {
+        document.getElementById("debugPageIframe").remove();
+        document.getElementById("treeHtml").remove();
+    } else if (ev.data.message === "closeIframe2") {
+        document.getElementById("treeHtml").remove();
     }
 })
 
