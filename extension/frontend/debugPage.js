@@ -1,4 +1,4 @@
-require.config({paths: {'vs': '../lib/min/vs'}});
+require.config({ paths: { 'vs': '../lib/min/vs' } });
 require(['vs/editor/editor.main'], function () {
 
     var context = 'public class Main {\n' +
@@ -74,14 +74,14 @@ require(['vs/editor/editor.main'], function () {
             var solutionClassRegex = /class Solution \{[\s\S]*?\n\}/;
             var match = context.match(solutionClassRegex);
             var solutionClassCode = match ? match[0] : null;
-            window.parent.postMessage({message: "debugEditorChange", context: solutionClassCode}, "*");
+            window.parent.postMessage({ message: "debugEditorChange", context: solutionClassCode }, "*");
         }
     });
 
     window.addEventListener("message", ev => {
         if (ev.data.message === "debugPageInitializedWithContext") {
             console.log("debugPage.js receive message debugPageInitializedWithContext");
-            window.parent.postMessage({message: "fetchContext"}, "*");
+            window.parent.postMessage({ message: "fetchContext" }, "*");
         } else if (ev.data.message === "context") {
             console.log("debugPage.js receive message context");
             context = ev.data.context;
@@ -111,7 +111,7 @@ require(['vs/editor/editor.main'], function () {
             }
         });
     });
-    observer.observe(document.body, {childList: true, subtree: true});
+    observer.observe(document.body, { childList: true, subtree: true });
 
 
     var decorations = [];
@@ -138,7 +138,7 @@ require(['vs/editor/editor.main'], function () {
         breakpointsLines.forEach(i => {
             var newDecoration = {
                 range: new monaco.Range(i, 1, i, 1),
-                options: {isWholeLine: true, glyphMarginClassName: 'myGlyphMarginClass'}
+                options: { isWholeLine: true, glyphMarginClassName: 'myGlyphMarginClass' }
             };
             newDecorations.push(newDecoration);
         })
@@ -156,7 +156,7 @@ require(['vs/editor/editor.main'], function () {
     }
 
 
-    window.parent.postMessage({message: "debugPageInitialized"}, "*");
+    window.parent.postMessage({ message: "debugPageInitialized" }, "*");
 
     console.log("Monaco Editor initialized");
 
@@ -172,7 +172,7 @@ require(['vs/editor/editor.main'], function () {
         //发送消息至content.js
         let outputArea = document.getElementById('output');
         let editArea = document.getElementById('editor');
-        window.parent.postMessage({message: "lengthenTheArea"}, "*");
+        window.parent.postMessage({ message: "lengthenTheArea" }, "*");
 
         editArea.style.height = '340px';
         console.log(editor);
@@ -241,7 +241,7 @@ require(['vs/editor/editor.main'], function () {
 
     document.getElementById("debug").onclick = () => {
 
-        window.parent.postMessage({message: "initTreeHtml"}, "*");
+        window.parent.postMessage({ message: "initTreeHtml" }, "*");
 
         let outputArea = document.getElementById('output');
         outputArea.innerText = "程序运行中……";
@@ -257,7 +257,7 @@ require(['vs/editor/editor.main'], function () {
 
         //发送消息至content.js
         let editArea = document.getElementById('editor');
-        window.parent.postMessage({message: "lengthenTheArea"}, "*");
+        window.parent.postMessage({ message: "lengthenTheArea" }, "*");
 
         editArea.style.height = '340px';
         console.log(editor);
@@ -288,38 +288,62 @@ require(['vs/editor/editor.main'], function () {
     }
 
     document.getElementById("step").onclick = () => {
+        document.getElementById("next").disabled = 'true';
+        document.getElementById("stepUp").disabled = 'true';
+        document.getElementById("cont").disabled = 'true';
 
         fetch(ip + '/step')
             .then(response => response.json())
             .then(result => {
                 debugStep(result);
+                document.getElementById("next").removeAttribute("disabled")
+                document.getElementById("stepUp").removeAttribute("disabled")
+                document.getElementById("cont").removeAttribute("disabled")
             })
             .catch(error => console.log('error', error));
     };
 
     document.getElementById("next").onclick = () => {
+        document.getElementById("step").disabled = 'true';
+        document.getElementById("stepUp").disabled = 'true';
+        document.getElementById("cont").disabled = 'true';
         fetch(ip + '/next')
             .then(response => response.json())
             .then(result => {
                 debugStep(result);
+                document.getElementById("step").removeAttribute("disabled")
+                document.getElementById("stepUp").removeAttribute("disabled")
+                document.getElementById("cont").removeAttribute("disabled")
             })
             .catch(error => console.log('error', error));
     };
 
     document.getElementById("stepUp").onclick = () => {
+        document.getElementById("step").disabled = 'true';
+        document.getElementById("next").disabled = 'true';
+        document.getElementById("cont").disabled = 'true';
         fetch(ip + '/stepUp')
             .then(response => response.json())
             .then(result => {
                 debugStep(result);
+                document.getElementById("step").removeAttribute("disabled")
+                document.getElementById("next").removeAttribute("disabled")
+                document.getElementById("cont").removeAttribute("disabled")
             })
             .catch(error => console.log('error', error));
     };
 
     document.getElementById("cont").onclick = () => {
+        document.getElementById("step").disabled = 'true';
+        document.getElementById("next").disabled = 'true';
+        document.getElementById("stepUp").disabled = 'true';
         fetch(ip + '/cont')
             .then(response => response.json())
             .then(result => {
                 debugStep(result);
+                document.getElementById("step").removeAttribute("disabled")
+                document.getElementById("next").removeAttribute("disabled")
+                document.getElementById("stepUp").removeAttribute("disabled")
             })
             .catch(error => console.log('error', error));
     };
@@ -334,11 +358,8 @@ require(['vs/editor/editor.main'], function () {
         document.getElementById("cont").style.display = 'none';
         document.getElementById("exit").style.display = 'none';
 
-        document.getElementById("output").style.height = '0px';
-        document.getElementById("dragLine").style.height = '0px';
-
-        window.parent.postMessage({message: "shortenTheArea"}, "*");
-        editor.layout();
+        //window.parent.postMessage({ message: "shortenTheArea" }, "*");
+        //editor.layout();
 
         fetch(ip + '/exit')
             .then(response => response.json())
@@ -362,7 +383,21 @@ require(['vs/editor/editor.main'], function () {
         let outputArea = document.getElementById('output');
         let content = "";
         if (result.debugInfo.message != null) {
-            content = result.debugInfo.message.substring(2);
+            if (result.debugInfo.message.includes("应用程序已退出")) {
+                document.getElementById("run").style.display = 'inline';
+                document.getElementById("debug").style.display = 'inline';
+
+                document.getElementById("step").style.display = 'none';
+                document.getElementById("next").style.display = 'none';
+                document.getElementById("stepUp").style.display = 'none';
+                document.getElementById("cont").style.display = 'none';
+                document.getElementById("exit").style.display = 'none';
+            }
+            if (result.debugInfo.message.startsWith('\r')) {
+                content = result.debugInfo.message.substring(2);
+            } else {
+                content = result.debugInfo.message;
+            }
         }
         if (result.debugInfo.variables != null) {
             console.log(result.debugInfo.variables[0])
@@ -378,6 +413,6 @@ require(['vs/editor/editor.main'], function () {
     }
 
     document.getElementById("closeButton1").onclick = () => {
-        window.parent.postMessage({message: "closeIframe1"}, "*");
+        window.parent.postMessage({ message: "closeIframe1" }, "*");
     };
 })

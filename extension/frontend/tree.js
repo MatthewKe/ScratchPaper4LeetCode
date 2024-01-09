@@ -12,6 +12,10 @@ window.addEventListener("message", ev => {
     }
 );
 document.getElementById("test").onclick = renderTree;
+document.getElementById("closeButton2").onclick = () => {
+    console.log("按下了")
+    window.parent.postMessage({message: "closeIframe2"}, "*");
+};
 
 function renderTree() {
     if (treeDatas == null) {
@@ -225,7 +229,3 @@ function renderTree() {
 
     fit();
 }
-
-document.getElementById("closeButton2").onclick = () => {
-    window.parent.postMessage({message: "closeIframe2"}, "*");
-};
