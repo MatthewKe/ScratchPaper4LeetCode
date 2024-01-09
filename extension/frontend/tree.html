@@ -8,25 +8,35 @@
         #dragBar {
             display: flex;
             text-align: left;
-            justify-content: flex-end; /* 右对齐关闭按钮 */
-            background-color: #f0f0f0; /* 拖拽栏背景色 */
+            justify-content: flex-end;
+            /* 右对齐关闭按钮 */
+            background-color: #f0f0f0;
+            /* 拖拽栏背景色 */
             padding: 0px;
-            height: 30px; /* 增加高度与覆盖层匹配 */
+            height: 30px;
+            /* 增加高度与覆盖层匹配 */
             /* cursor: move; /* 拖拽光标 */
         }
 
         #closeButton {
             cursor: pointer;
-            border: none; /* 移除边框 */
-            background-color: transparent; /* 初始背景色透明 */
-            color: black; /* 初始文本颜色 */
-            font-size: 16px; /* 字体大小 */
-            padding: 5px 10px; /* 内边距 */
-            transition: background-color 0.3s, color 0.3s; /* 过渡效果 */
+            border: none;
+            /* 移除边框 */
+            background-color: transparent;
+            /* 初始背景色透明 */
+            color: black;
+            /* 初始文本颜色 */
+            font-size: 16px;
+            /* 字体大小 */
+            padding: 5px 10px;
+            /* 内边距 */
+            transition: background-color 0.3s, color 0.3s;
+            /* 过渡效果 */
         }
 
         #closeButton:hover {
-            background-color: red; /* 鼠标悬停时的背景色 */
+            background-color: red;
+            /* 鼠标悬停时的背景色 */
             color: white;
         }
 
@@ -53,18 +63,32 @@
             text-anchor: middle;
             /* 文本居中 */
         }
+
+        #debugButtons {
+            height: 25px;
+            background-color: #f0f0f0; /* 调试按钮栏背景色 */
+            padding: 5px;
+            display: flex; /* 水平排列按钮 */
+            justify-content: center; /* 居中按钮 */
+            align-items: center; /* 竖直居中 */
+        }
+
+        button {
+            margin: 2px 5px 2px 5px
+        }
     </style>
 </head>
 
 <body>
     <div id="dragBar">
-        <button id="closeButton">×</button>
+        <button id="closeButton2">×</button>
     </div>
     <svg width="600" height="400" id="svg"></svg>
-    <hr>
-    <button id="fit">适应边框</button>
-    <button id="focus">聚焦</button>
-    <button id="test">测试</button>
+    <div id="debugButtons">
+        <button id="fit">适应边框</button>
+        <button id="focus">聚焦</button>
+        <button id="test">测试</button>
+    </div>
     <script src="d3.v7.min.js"></script>
     <script src="tree.js"></script>
 </body>

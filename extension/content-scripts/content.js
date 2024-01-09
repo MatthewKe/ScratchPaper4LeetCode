@@ -50,7 +50,7 @@ chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
     iframe = document.createElement('iframe');
     iframe.id = 'debugPageIframe';
     iframe.style.width = '600px';
-    iframe.style.height = '400px';
+    iframe.style.height = '406px';
     iframe.style.position = 'fixed';
     iframe.style.top = '10px';
     iframe.style.left = '10px';
@@ -119,7 +119,7 @@ window.addEventListener("message", ev => {
     iframe2 = document.createElement('iframe');
     iframe2.id = 'treeHtml';
     iframe2.style.width = '620px';
-    iframe2.style.height = '500px';
+    iframe2.style.height = '485px';
     iframe2.style.position = 'fixed';
     iframe2.style.top = '40px';
     iframe2.style.left = '700px';
@@ -188,7 +188,7 @@ window.addEventListener("message", ev => {
         window.parent.postMessage({ message: "lengthenSucceeded" }, "*");
     } else if (ev.data.message === "shortenTheArea") {
         console.log("发送成功")
-        document.getElementById('debugPageIframe').style.height = '400px';
+        document.getElementById('debugPageIframe').style.height = '406px';
         window.parent.postMessage({ message: "shortenSucceeded" }, "*");
     }
 })
