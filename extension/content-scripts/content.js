@@ -18,7 +18,7 @@ var choosedLanguage;
 
 function triggerFetchMonacoContext() {
     if (injectInitialized && debugPageInitialized) {
-        iframe.contentWindow.postMessage({message: "debugPageInitializedWithContext"}, "*");
+        iframe.contentWindow.postMessage({ message: "debugPageInitializedWithContext" }, "*");
         //iframe.contentWindow.postMessage({message:"languageType", type:choosedLanguage}, "*");
         console.log("sendMessage debugPageInitializedWithContext");
     }
@@ -112,6 +112,10 @@ window.addEventListener("message", ev => {
     if (ev.data.message != "initTreeHtml") {
         return
     }
+    if (document.getElementById('treeHtml') != null) {
+        
+        document.getElementById('treeHtml').remove()
+    }
     iframe2 = document.createElement('iframe');
     iframe2.id = 'treeHtml';
     iframe2.style.width = '620px';
@@ -129,9 +133,10 @@ window.addEventListener("message", ev => {
     dragCover.style.top = '40px';
     dragCover.style.left = '500px';
     dragCover.style.width = '580px'; // 给关闭框留出位置
-    dragCover.style.height = '30px'; // 与拖动区的大小一致
+    dragCover.style.height = '38px'; // 与拖动区的大小一致
     dragCover.style.zIndex = '1001'; // 确保比 iframe 高，以出现在前方
     dragCover.style.cursor = 'move'; // 使鼠标悬停时能够变换样式
+    // dragCover.style.backgroundColor = 'grey'
 
     // 添加 iframe 和覆盖层到页面
     document.body.appendChild(iframe2);
@@ -180,11 +185,11 @@ window.addEventListener("message", ev => {
     if (ev.data.message === "lengthenTheArea") {
         console.log("发送成功")
         document.getElementById('debugPageIframe').style.height = '550px';
-        window.parent.postMessage({message: "lengthenSucceeded"}, "*");
+        window.parent.postMessage({ message: "lengthenSucceeded" }, "*");
     } else if (ev.data.message === "shortenTheArea") {
         console.log("发送成功")
         document.getElementById('debugPageIframe').style.height = '400px';
-        window.parent.postMessage({message: "shortenSucceeded"}, "*");
+        window.parent.postMessage({ message: "shortenSucceeded" }, "*");
     }
 })
 
