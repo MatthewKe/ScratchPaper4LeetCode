@@ -93,13 +93,13 @@ require(['vs/editor/editor.main'], function () {
         } else if (ev.data.message === "context") {
             console.log("debugPage.js receive message context");
             context = ev.data.context;
-            editor.setValue(comments + context);
+            editor.setValue(context);
         } else if (ev.data.message === "leetcodeEditorChange") {
             isProgrammaticChange = true;
             var originalCode = editor.getValue();
             var newSolutionCode = ev.data.context;
             var replacedCode = originalCode.replace(/class Solution \{[\s\S]*?\n\}/, newSolutionCode);
-            editor.setValue(comments + replacedCode);
+            editor.setValue(replacedCode);
         }
         if (ev.data.message === "languageType") {
             console.log("已传送");
