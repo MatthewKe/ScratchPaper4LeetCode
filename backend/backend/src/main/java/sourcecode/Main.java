@@ -2,8 +2,8 @@ package sourcecode;
 import com.example.backend.service.TreeNode;
 public class Main {
     public static void main(String[] args) {
-        // please enter your test code here
-        new Solution().constructMaximumBinaryTree(new int[]{1,2,3});
+        Solution solution = new Solution();
+        solution.constructMaximumBinaryTree(new int[]{1, 2, 3});
         System.out.println("hello world");
     }
 }

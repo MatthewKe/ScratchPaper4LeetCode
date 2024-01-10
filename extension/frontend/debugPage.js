@@ -1,4 +1,4 @@
-require.config({ paths: { 'vs': '../lib/min/vs' } });
+require.config({paths: {'vs': '../lib/min/vs'}});
 require(['vs/editor/editor.main'], function () {
 
     var context = 'public class Main {\n' +
@@ -74,7 +74,7 @@ require(['vs/editor/editor.main'], function () {
             var solutionClassRegex = /class Solution \{[\s\S]*?\n\}/;
             var match = context.match(solutionClassRegex);
             var solutionClassCode = match ? match[0] : null;
-            window.parent.postMessage({ message: "debugEditorChange", context: solutionClassCode }, "*");
+            window.parent.postMessage({message: "debugEditorChange", context: solutionClassCode}, "*");
         }
     });
 
@@ -89,7 +89,7 @@ require(['vs/editor/editor.main'], function () {
     window.addEventListener("message", ev => {
         if (ev.data.message === "debugPageInitializedWithContext") {
             console.log("debugPage.js receive message debugPageInitializedWithContext");
-            window.parent.postMessage({ message: "fetchContext" }, "*");
+            window.parent.postMessage({message: "fetchContext"}, "*");
         } else if (ev.data.message === "context") {
             console.log("debugPage.js receive message context");
             context = ev.data.context;
@@ -120,7 +120,7 @@ require(['vs/editor/editor.main'], function () {
             }
         });
     });
-    observer.observe(document.body, { childList: true, subtree: true });
+    observer.observe(document.body, {childList: true, subtree: true});
 
 
     var decorations = [];
@@ -147,7 +147,7 @@ require(['vs/editor/editor.main'], function () {
         breakpointsLines.forEach(i => {
             var newDecoration = {
                 range: new monaco.Range(i, 1, i, 1),
-                options: { isWholeLine: true, glyphMarginClassName: 'myGlyphMarginClass' }
+                options: {isWholeLine: true, glyphMarginClassName: 'myGlyphMarginClass'}
             };
             newDecorations.push(newDecoration);
         })
@@ -165,7 +165,7 @@ require(['vs/editor/editor.main'], function () {
     }
 
 
-    window.parent.postMessage({ message: "debugPageInitialized" }, "*");
+    window.parent.postMessage({message: "debugPageInitialized"}, "*");
 
     console.log("Monaco Editor initialized");
 
@@ -181,7 +181,7 @@ require(['vs/editor/editor.main'], function () {
         //发送消息至content.js
         let outputArea = document.getElementById('output');
         let editArea = document.getElementById('editor');
-        window.parent.postMessage({ message: "lengthenTheArea" }, "*");
+        window.parent.postMessage({message: "lengthenTheArea"}, "*");
 
         editArea.style.height = '340px';
         console.log(editor);
@@ -250,7 +250,7 @@ require(['vs/editor/editor.main'], function () {
 
     document.getElementById("debug").onclick = () => {
 
-        window.parent.postMessage({ message: "initTreeHtml" }, "*");
+        window.parent.postMessage({message: "initTreeHtml"}, "*");
 
         let outputArea = document.getElementById('output');
         outputArea.innerText = "程序运行中……";
@@ -266,7 +266,7 @@ require(['vs/editor/editor.main'], function () {
 
         //发送消息至content.js
         let editArea = document.getElementById('editor');
-        window.parent.postMessage({ message: "lengthenTheArea" }, "*");
+        window.parent.postMessage({message: "lengthenTheArea"}, "*");
 
         editArea.style.height = '340px';
         console.log(editor);
@@ -421,9 +421,13 @@ require(['vs/editor/editor.main'], function () {
             for (i = 0; i < result.debugInfo.variables.length; i++) {
                 console.log(result.debugInfo.variables[i])
                 let variable = JSON.stringify(result.debugInfo.variables[i]);
-                if (variable.startsWith('{') && variable.endsWith('}')) {
-                    variable = variable.substring(1, variable.length - 1)
+                const regex = /"([^"]+)":"([^"]+)"/;
+                const match = variable.match(regex);
+
+                if (match) {
+                    variable = `${match[1]} : ${match[2]}`;
                 }
+                
                 content = content + '\n' + variable
             }
         }
@@ -434,6 +438,6 @@ require(['vs/editor/editor.main'], function () {
     }
 
     document.getElementById("closeButton1").onclick = () => {
-        window.parent.postMessage({ message: "closeIframe1" }, "*");
+        window.parent.postMessage({message: "closeIframe1"}, "*");
     };
 })
