@@ -159,7 +159,7 @@ function renderTree() {
             var newK = event.transform.k;
             var newX = event.transform.x + (preContainerWidth[i - 1] || 0) * newK;
             var newY = event.transform.y + 40;
-            container.attr("transform", "translate(" + newX + "," + newY + ") scale(" + newK + ")");
+            container?.attr("transform", "translate(" + newX + "," + newY + ") scale(" + newK + ")");
         }
     });
 
@@ -221,10 +221,12 @@ function renderTree() {
         const translateX = -minX * scale;
         const translateY = -minY * scale;
 
+        // svg.transition()
+        //     .duration(750)
+        //     .call(zoom.transform, d3.zoomIdentity.translate(translateX, translateY).scale(scale));
         svg.transition()
             .duration(750)
-            .call(zoom.transform, d3.zoomIdentity.translate(translateX, translateY).scale(scale));
-
+            .call(zoom.transform, d3.zoomIdentity.translate(0, translateY).scale(scale));
     }
 
     fit();

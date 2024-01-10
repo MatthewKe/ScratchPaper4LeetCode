@@ -18,7 +18,7 @@ var choosedLanguage;
 
 function triggerFetchMonacoContext() {
     if (injectInitialized && debugPageInitialized) {
-        iframe.contentWindow.postMessage({ message: "debugPageInitializedWithContext" }, "*");
+        iframe.contentWindow.postMessage({message: "debugPageInitializedWithContext"}, "*");
         //iframe.contentWindow.postMessage({message:"languageType", type:choosedLanguage}, "*");
         console.log("sendMessage debugPageInitializedWithContext");
     }
@@ -113,13 +113,13 @@ window.addEventListener("message", ev => {
         return
     }
     if (document.getElementById('treeHtml') != null) {
-        
+
         document.getElementById('treeHtml').remove()
     }
     iframe2 = document.createElement('iframe');
     iframe2.id = 'treeHtml';
-    iframe2.style.width = '620px';
-    iframe2.style.height = '485px';
+    iframe2.style.width = '600px';
+    iframe2.style.height = '455px';
     iframe2.style.position = 'fixed';
     iframe2.style.top = '40px';
     iframe2.style.left = '700px';
@@ -185,11 +185,11 @@ window.addEventListener("message", ev => {
     if (ev.data.message === "lengthenTheArea") {
         console.log("发送成功")
         document.getElementById('debugPageIframe').style.height = '550px';
-        window.parent.postMessage({ message: "lengthenSucceeded" }, "*");
+        window.parent.postMessage({message: "lengthenSucceeded"}, "*");
     } else if (ev.data.message === "shortenTheArea") {
         console.log("发送成功")
         document.getElementById('debugPageIframe').style.height = '406px';
-        window.parent.postMessage({ message: "shortenSucceeded" }, "*");
+        window.parent.postMessage({message: "shortenSucceeded"}, "*");
     } else if (ev.data.message === "closeIframe1") {
         document.getElementById("debugPageIframe").remove();
         document.getElementById("treeHtml").remove();
