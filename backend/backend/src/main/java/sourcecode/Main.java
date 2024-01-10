@@ -8,7 +8,6 @@ public class Main {
     }
 }
 
-
 class Solution {
     public TreeNode constructMaximumBinaryTree(int[] nums) {
         return construct(nums, 0, nums.length - 1);
@@ -25,6 +24,8 @@ class Solution {
             }
         }
         TreeNode node = new TreeNode(nums[best]);
+        TreeNode left1 = node.left;
+        TreeNode right1 = node.right;
         node.setLeft(construct(nums, left, best - 1));
         node.setRight(construct(nums, best + 1, right));
         return node;
