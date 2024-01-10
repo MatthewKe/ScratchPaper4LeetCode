@@ -1,10 +1,16 @@
 package sourcecode;
 import com.example.backend.service.TreeNode;
+public class Main {
+    public static void main(String[] args) {
+        // please enter your test code here
+        System.out.println("hello world");
+    }
+}
+
 class Solution {
     public TreeNode constructMaximumBinaryTree(int[] nums) {
         return construct(nums, 0, nums.length - 1);
     }
-
     public TreeNode construct(int[] nums, int left, int right) {
         if (left > right) {
             return null;
