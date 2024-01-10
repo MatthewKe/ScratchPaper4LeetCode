@@ -79,12 +79,12 @@ require(['vs/editor/editor.main'], function () {
     });
 
     let comments = 'public class Main {\n' +
-    '    public static void main(String[] args) {\n' +
-    '        // please enter your test code here\n' +
-    '        System.out.println("hello world");\n' +
-    '    }\n' +
-    '}\n' +
-    '\n'
+        '    public static void main(String[] args) {\n' +
+        '        // please enter your test code here\n' +
+        '        System.out.println("hello world");\n' +
+        '    }\n' +
+        '}\n' +
+        '\n'
 
     window.addEventListener("message", ev => {
         if (ev.data.message === "debugPageInitializedWithContext") {
@@ -93,7 +93,7 @@ require(['vs/editor/editor.main'], function () {
         } else if (ev.data.message === "context") {
             console.log("debugPage.js receive message context");
             context = ev.data.context;
-            context=comments+context;
+            context = comments + context;
             editor.setValue(context);
         } else if (ev.data.message === "leetcodeEditorChange") {
             isProgrammaticChange = true;
@@ -420,7 +420,11 @@ require(['vs/editor/editor.main'], function () {
             console.log(result.debugInfo.variables[0])
             for (i = 0; i < result.debugInfo.variables.length; i++) {
                 console.log(result.debugInfo.variables[i])
-                content = content + '\n' + JSON.stringify(result.debugInfo.variables[i])
+                let variable = JSON.stringify(result.debugInfo.variables[i]);
+                if (variable.startsWith('{') && variable.endsWith('}')) {
+                    variable = variable.substring(1, variable.length - 1)
+                }
+                content = content + '\n' + variable
             }
         }
         outputArea.innerText = content
