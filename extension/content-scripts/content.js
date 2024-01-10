@@ -194,6 +194,7 @@ window.addEventListener("message", ev => {
         document.getElementById("debugPageIframe").remove();
         document.getElementById("treeHtml").remove();
     } else if (ev.data.message === "closeIframe2") {
+        console.log('传过来了')
         document.getElementById("treeHtml").remove();
     }
 })
